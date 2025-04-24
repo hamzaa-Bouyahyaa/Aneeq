@@ -34,7 +34,13 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-navy">Beauty</span>
+              <span
+                className={`text-2xl font-bold ${
+                  scrolled ? "text-navy" : "text-white"
+                }`}
+              >
+                Beauty
+              </span>
               <span className="text-2xl font-bold text-gold">Salon</span>
             </div>
           </Link>
@@ -44,7 +50,11 @@ const Navbar = () => {
             <Link
               to="/"
               className={`font-medium transition-colors ${
-                isActive("/") ? "text-gold" : "text-navy hover:text-gold"
+                isActive("/")
+                  ? "text-gold"
+                  : scrolled
+                  ? "text-navy hover:text-gold"
+                  : "text-white hover:text-gold"
               }`}
             >
               Home
@@ -52,7 +62,11 @@ const Navbar = () => {
             <Link
               to="/salons"
               className={`font-medium transition-colors ${
-                isActive("/salons") ? "text-gold" : "text-navy hover:text-gold"
+                isActive("/salons")
+                  ? "text-gold"
+                  : scrolled
+                  ? "text-navy hover:text-gold"
+                  : "text-white hover:text-gold"
               }`}
             >
               Salons
@@ -62,7 +76,9 @@ const Navbar = () => {
               className={`font-medium transition-colors ${
                 isActive("/services")
                   ? "text-gold"
-                  : "text-navy hover:text-gold"
+                  : scrolled
+                  ? "text-navy hover:text-gold"
+                  : "text-white hover:text-gold"
               }`}
             >
               Services
@@ -70,7 +86,11 @@ const Navbar = () => {
             <Link
               to="/about"
               className={`font-medium transition-colors ${
-                isActive("/about") ? "text-gold" : "text-navy hover:text-gold"
+                isActive("/about")
+                  ? "text-gold"
+                  : scrolled
+                  ? "text-navy hover:text-gold"
+                  : "text-white hover:text-gold"
               }`}
             >
               About
@@ -81,7 +101,9 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               to="/login"
-              className="font-medium text-navy hover:text-gold transition-colors"
+              className={`font-medium ${
+                scrolled ? "text-navy" : "text-white"
+              } hover:text-gold transition-colors`}
             >
               Log in
             </Link>
