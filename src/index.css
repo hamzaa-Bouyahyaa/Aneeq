@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Poppins", system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-lightGray text-navy min-h-screen;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-medium text-navy;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply bg-gold hover:bg-gold-dark text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-button;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-lightGray text-navy font-medium py-2.5 px-6 border border-lightGray rounded-lg transition-colors;
+  }
+
+  .btn-outline {
+    @apply bg-transparent hover:bg-gold/10 text-gold font-medium py-2.5 px-6 border border-gold rounded-lg transition-colors;
+  }
+
+  .btn-navy {
+    @apply bg-navy hover:bg-navy-light text-white font-medium py-2.5 px-6 rounded-lg transition-colors;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-card overflow-hidden transition-all duration-300 hover:shadow-elegant;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-lightGray rounded-lg focus:ring-2 focus:ring-gold/50 focus:border-gold outline-none transition-all;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-navy/70 mb-10 max-w-3xl;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
+  }
+
+  .badge-gold {
+    @apply bg-gold/10 text-gold;
+  }
+
+  .badge-navy {
+    @apply bg-navy/10 text-navy;
+  }
+
+  .badge-gray {
+    @apply bg-lightGray text-navy/70;
+  }
+}
