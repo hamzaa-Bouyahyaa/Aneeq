@@ -4,12 +4,12 @@
 
 @layer base {
   html {
-    font-family: "Poppins", system-ui, sans-serif;
+    font-family: "Montserrat", system-ui, sans-serif;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-lightGray text-navy min-h-screen;
+    @apply bg-white text-black min-h-screen;
   }
 
   h1,
@@ -18,7 +18,27 @@
   h4,
   h5,
   h6 {
-    @apply font-medium text-navy;
+    @apply font-display font-medium text-black tracking-luxury;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  p {
+    @apply leading-luxury;
+  }
+
+  a {
+    @apply transition-all duration-300;
   }
 }
 
@@ -28,50 +48,164 @@
   }
 
   .btn-primary {
-    @apply bg-gold hover:bg-gold-dark text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-button;
+    @apply bg-black hover:bg-black-light text-white font-medium py-3 px-8 transition-colors uppercase tracking-wider text-sm;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-lightGray text-navy font-medium py-2.5 px-6 border border-lightGray rounded-lg transition-colors;
+    @apply bg-white hover:bg-gray-100 text-black font-medium py-3 px-8 border border-black/10 transition-colors uppercase tracking-wider text-sm;
+  }
+
+  .btn-gold {
+    @apply bg-gold hover:bg-gold-dark text-white font-medium py-3 px-8 transition-colors uppercase tracking-wider text-sm;
   }
 
   .btn-outline {
-    @apply bg-transparent hover:bg-gold/10 text-gold font-medium py-2.5 px-6 border border-gold rounded-lg transition-colors;
-  }
-
-  .btn-navy {
-    @apply bg-navy hover:bg-navy-light text-white font-medium py-2.5 px-6 rounded-lg transition-colors;
+    @apply bg-transparent hover:bg-black/5 text-black font-medium py-3 px-8 border border-black/20 transition-colors uppercase tracking-wider text-sm;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-card overflow-hidden transition-all duration-300 hover:shadow-elegant;
+    @apply bg-white shadow-luxury overflow-hidden transition-all duration-300;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 border border-lightGray rounded-lg focus:ring-2 focus:ring-gold/50 focus:border-gold outline-none transition-all;
+    @apply w-full px-4 py-3 border-b border-black/10 focus:border-gold outline-none transition-all bg-transparent;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold mb-4;
+    @apply text-3xl md:text-4xl font-display uppercase tracking-luxury mb-6;
   }
 
   .section-subtitle {
-    @apply text-lg text-navy/70 mb-10 max-w-3xl;
+    @apply text-lg text-black/70 mb-12 max-w-3xl;
+  }
+
+  .luxury-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+  }
+
+  .luxury-divider {
+    @apply w-16 h-px bg-gold my-8;
+  }
+
+  .luxury-overlay {
+    @apply absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-500 flex items-center justify-center;
   }
 
   .badge {
-    @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
+    @apply inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider;
   }
 
   .badge-gold {
     @apply bg-gold/10 text-gold;
   }
 
-  .badge-navy {
-    @apply bg-navy/10 text-navy;
+  .badge-black {
+    @apply bg-black/10 text-black;
   }
 
   .badge-gray {
-    @apply bg-lightGray text-navy/70;
+    @apply bg-gray-200 text-black/70;
+  }
+
+  /* Animations */
+  .fade-in {
+    @apply opacity-0 animate-[fadeIn_1s_ease-in-out_forwards];
+  }
+
+  .slide-up {
+    @apply translate-y-10 opacity-0 animate-[slideUp_1s_ease-in-out_forwards];
+  }
+
+  .slide-in-right {
+    @apply translate-x-10 opacity-0 animate-[slideInRight_1s_ease-in-out_forwards];
+  }
+
+  .slide-in-left {
+    @apply -translate-x-10 opacity-0 animate-[slideInLeft_1s_ease-in-out_forwards];
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .tracking-luxury {
+    letter-spacing: 0.05em;
+  }
+
+  .leading-luxury {
+    line-height: 1.8;
+  }
+
+  .shadow-luxury {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .text-gold {
+    color: #fca311;
+  }
+
+  .bg-gold {
+    background-color: #fca311;
+  }
+
+  .border-gold {
+    border-color: #fca311;
+  }
+
+  .hover\:text-gold:hover {
+    color: #fca311;
+  }
+
+  .hover\:bg-gold:hover {
+    background-color: #fca311;
+  }
+
+  .hover\:border-gold:hover {
+    border-color: #fca311;
+  }
+
+  .font-display {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
   }
 }

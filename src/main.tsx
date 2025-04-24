@@ -4,8 +4,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
 import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
-import Salons from "./pages/Salons";
+import LuxuryHome from "./pages/LuxuryHome";
+import LuxurySalons from "./pages/LuxurySalons";
 import SalonDetail from "./pages/SalonDetail";
 import Checkout from "./pages/Checkout";
 import Auth from "./pages/Auth";
@@ -18,11 +18,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <LuxuryHome />,
       },
       {
         path: "salons",
-        element: <Salons />,
+        element: <LuxurySalons />,
       },
       {
         path: "salon/:id",
