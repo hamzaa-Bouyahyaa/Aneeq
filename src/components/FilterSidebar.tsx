@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface FilterSidebarProps {
   onFilterChange: (filters: any) => void;
@@ -12,14 +12,14 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
   });
 
   const services = [
-    'Haircut',
-    'Hair Coloring',
-    'Manicure',
-    'Pedicure',
-    'Facial',
-    'Massage',
-    'Makeup',
-    'Waxing',
+    "Haircut",
+    "Hair Coloring",
+    "Manicure",
+    "Pedicure",
+    "Facial",
+    "Massage",
+    "Makeup",
+    "Waxing",
   ];
 
   const handleServiceChange = (service: string) => {
@@ -46,7 +46,10 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
     onFilterChange(updatedFilters);
   };
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handlePriceChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const value = parseInt(e.target.value);
     const updatedPrice = [...filters.price];
     updatedPrice[index] = value;
@@ -61,13 +64,13 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold mb-4">Filters</h3>
+    <div className="bg-white rounded-xl shadow-card p-6">
+      <h3 className="text-lg font-semibold mb-6 text-navy">Filters</h3>
 
       {/* Services */}
-      <div className="mb-6">
-        <h4 className="font-medium mb-2">Services</h4>
-        <div className="space-y-2">
+      <div className="mb-8">
+        <h4 className="font-medium mb-3 text-navy">Services</h4>
+        <div className="space-y-3">
           {services.map((service) => (
             <div key={service} className="flex items-center">
               <input
@@ -75,9 +78,12 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                 type="checkbox"
                 checked={filters.services.includes(service)}
                 onChange={() => handleServiceChange(service)}
-                className="h-4 w-4 text-primary-600 border-gray-300 rounded"
+                className="h-4 w-4 text-gold border-lightGray rounded focus:ring-gold/30"
               />
-              <label htmlFor={`service-${service}`} className="ml-2 text-sm text-gray-700">
+              <label
+                htmlFor={`service-${service}`}
+                className="ml-2 text-sm text-navy"
+              >
                 {service}
               </label>
             </div>
@@ -86,9 +92,9 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       </div>
 
       {/* Rating */}
-      <div className="mb-6">
-        <h4 className="font-medium mb-2">Rating</h4>
-        <div className="space-y-2">
+      <div className="mb-8">
+        <h4 className="font-medium mb-3 text-navy">Rating</h4>
+        <div className="space-y-3">
           {[5, 4, 3, 2, 1].map((rating) => (
             <div key={rating} className="flex items-center">
               <input
@@ -97,14 +103,17 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                 name="rating"
                 checked={filters.rating === rating}
                 onChange={() => handleRatingChange(rating)}
-                className="h-4 w-4 text-primary-600 border-gray-300"
+                className="h-4 w-4 text-gold border-lightGray focus:ring-gold/30"
               />
-              <label htmlFor={`rating-${rating}`} className="ml-2 text-sm text-gray-700 flex items-center">
+              <label
+                htmlFor={`rating-${rating}`}
+                className="ml-2 text-sm text-navy flex items-center"
+              >
                 {Array.from({ length: rating }).map((_, i) => (
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-500"
+                    className="h-4 w-4 text-gold"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -115,7 +124,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-300"
+                    className="h-4 w-4 text-lightGray"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -131,10 +140,10 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
 
       {/* Price Range */}
       <div>
-        <h4 className="font-medium mb-2">Price Range</h4>
-        <div className="flex items-center space-x-4 mb-2">
+        <h4 className="font-medium mb-3 text-navy">Price Range</h4>
+        <div className="flex items-center space-x-4 mb-3">
           <div className="flex-1">
-            <label htmlFor="min-price" className="block text-sm text-gray-700 mb-1">
+            <label htmlFor="min-price" className="block text-sm text-navy mb-1">
               Min (TND)
             </label>
             <input
@@ -144,11 +153,11 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
               max={filters.price[1]}
               value={filters.price[0]}
               onChange={(e) => handlePriceChange(e, 0)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+              className="w-full border border-lightGray rounded-lg px-3 py-2 text-sm focus:border-gold focus:ring-1 focus:ring-gold/30 outline-none"
             />
           </div>
           <div className="flex-1">
-            <label htmlFor="max-price" className="block text-sm text-gray-700 mb-1">
+            <label htmlFor="max-price" className="block text-sm text-navy mb-1">
               Max (TND)
             </label>
             <input
@@ -157,14 +166,14 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
               min={filters.price[0]}
               value={filters.price[1]}
               onChange={(e) => handlePriceChange(e, 1)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+              className="w-full border border-lightGray rounded-lg px-3 py-2 text-sm focus:border-gold focus:ring-1 focus:ring-gold/30 outline-none"
             />
           </div>
         </div>
         <div className="relative pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">{filters.price[0]} TND</span>
-            <span className="text-xs text-gray-500">{filters.price[1]} TND</span>
+            <span className="text-xs text-navy/60">{filters.price[0]} TND</span>
+            <span className="text-xs text-navy/60">{filters.price[1]} TND</span>
           </div>
         </div>
       </div>
@@ -180,7 +189,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
           setFilters(resetFilters);
           onFilterChange(resetFilters);
         }}
-        className="mt-6 w-full py-2 text-sm text-primary-600 hover:text-primary-700 font-medium"
+        className="mt-8 w-full py-2.5 text-sm text-gold hover:text-gold-dark font-medium border border-gold rounded-lg hover:bg-gold/5 transition-colors"
       >
         Reset Filters
       </button>

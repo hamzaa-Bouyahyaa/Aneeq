@@ -85,7 +85,7 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
+      <section className="relative bg-gradient-to-r from-navy to-navy-dark text-white py-20">
         <div className="container-custom relative z-10">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
