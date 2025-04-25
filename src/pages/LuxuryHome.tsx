@@ -243,13 +243,13 @@ const LuxuryHome = () => {
 
         {/* Hero Content - Richard Mille Style (Bottom Left) */}
         <div className="relative z-20 h-full">
-          <div className="absolute bottom-0 left-0 p-12 pb-20 max-w-xl">
+          <div className="absolute bottom-0 left-0 p-12 pb-20">
             <div className="text-white">
               <h1
                 className="text-4xl text-white md:text-5xl lg:text-6xl font-display uppercase tracking-luxury mb-4 slide-up"
                 style={{ animationDelay: "0.3s" }}
               >
-                Luxury Beauty <span className="text-gold">Experience</span>
+                Luxury Beauty Experience
               </h1>
               <div className="w-24 h-[2px] bg-gold mb-8"></div>
               <p
