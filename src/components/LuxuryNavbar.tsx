@@ -59,10 +59,7 @@ const LuxuryNavbar = () => {
     };
   }, [isMenuOpen]);
 
-  // Toggle menu function
-  const toggleMenu = () => {
-    setIsMenuOpen((prevState) => !prevState);
-  };
+  // We'll use this directly in the onClick handler
 
   // Animation classes for menu items
   const getMenuItemClass = (index: number) => {
@@ -80,26 +77,11 @@ const LuxuryNavbar = () => {
           scrolled ? "bg-white py-3" : "bg-transparent py-5"
         }`}
       >
-        <div className="container-custom">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center z-50 relative">
-              <span
-                className={`text-2xl font-display tracking-luxury uppercase ${
-                  isMenuOpen
-                    ? "text-white"
-                    : scrolled
-                    ? "text-black"
-                    : "text-white"
-                }`}
-              >
-                BeautySalon
-              </span>
-            </Link>
-
-            {/* Menu Button */}
+        <div className="px-[56px] py-0 max-w-[none]">
+          <div className="flex items-center justify-between relative">
+            {/* Menu Button - positioned at the left edge with higher z-index */}
             <button
-              className={`flex items-center justify-center focus:outline-none z-50 relative group ${
+              className={`flex items-center justify-center focus:outline-none z-[100] relative group ${
                 isMenuOpen
                   ? "text-white"
                   : scrolled
@@ -135,22 +117,49 @@ const LuxuryNavbar = () => {
                 </span>
               </div>
             </button>
+
+            {/* Logo */}
+            <Link to="/" className="flex items-center z-50 relative">
+              <span
+                className={`text-2xl font-display tracking-luxury uppercase ${
+                  isMenuOpen
+                    ? "text-white"
+                    : scrolled
+                    ? "text-black"
+                    : "text-white"
+                }`}
+              >
+                BeautySalon
+              </span>
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Full-screen Menu Overlay */}
+      {/* Left-side Drawer Menu Overlay */}
       <div
-        ref={menuRef}
-        className={`fixed inset-0 bg-black z-40 transition-all duration-700 ease-in-out ${
+        className={`fixed inset-0 z-[80] transition-all duration-700 ease-in-out ${
           isMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        onClick={() => setIsMenuOpen(false)}
       >
-        <div className="container-custom h-full flex flex-col justify-center py-20 overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
-            <div className="space-y-10">
+        {/* Empty div that covers the right side of the screen - clicking here closes the menu */}
+      </div>
+      <div
+        ref={menuRef}
+        className={`fixed top-0 bottom-0 left-0 w-full md:w-1/3 bg-black bg-opacity-50 z-[90] transition-all duration-500 ease-in-out transform ${
+          isMenuOpen
+            ? "translate-x-0 opacity-100 pointer-events-auto"
+            : "-translate-x-full opacity-0 pointer-events-none"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="h-full flex flex-col justify-between py-20 px-8 md:px-12 overflow-y-auto">
+          <div className="space-y-12">
+            <div className="space-y-8">
               <h3
                 className={`text-gold font-display uppercase tracking-luxury text-xl transition-all duration-700 ease-in-out ${
                   menuAnimationComplete
@@ -164,7 +173,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(1)}>
                   <Link
                     to="/"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Home
@@ -174,7 +183,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(2)}>
                   <Link
                     to="/salons"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Salons
@@ -184,7 +193,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(3)}>
                   <Link
                     to="/services"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Services
@@ -194,7 +203,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(4)}>
                   <Link
                     to="/about"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     About
@@ -204,7 +213,7 @@ const LuxuryNavbar = () => {
               </ul>
             </div>
 
-            <div className="space-y-10">
+            <div className="space-y-8">
               <h3
                 className={`text-gold font-display uppercase tracking-luxury text-xl transition-all duration-700 ease-in-out ${
                   menuAnimationComplete
@@ -218,7 +227,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(5)}>
                   <Link
                     to="/login"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Login
@@ -228,7 +237,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(6)}>
                   <Link
                     to="/signup"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Sign Up
@@ -238,7 +247,7 @@ const LuxuryNavbar = () => {
                 <li className={getMenuItemClass(7)}>
                   <Link
                     to="/book-appointment"
-                    className="text-white hover:text-gold text-3xl md:text-5xl font-display uppercase tracking-luxury transition-colors relative group"
+                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Book Appointment
@@ -246,25 +255,25 @@ const LuxuryNavbar = () => {
                   </Link>
                 </li>
               </ul>
+            </div>
 
-              <div
-                className={`pt-12 transition-all duration-700 ease-in-out ${
-                  menuAnimationComplete
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-8 opacity-0"
-                }`}
-              >
-                <h3 className="text-gold font-display uppercase tracking-luxury text-xl mb-4">
-                  Contact
-                </h3>
-                <p className="text-white/80 mb-2">support@beautysalon.com</p>
-                <p className="text-white/80">+216 123 456 789</p>
-              </div>
+            <div
+              className={`transition-all duration-700 ease-in-out ${
+                menuAnimationComplete
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
+              <h3 className="text-gold font-display uppercase tracking-luxury text-xl mb-4">
+                Contact
+              </h3>
+              <p className="text-white/80 mb-2">support@beautysalon.com</p>
+              <p className="text-white/80">+216 123 456 789</p>
             </div>
           </div>
 
           <div
-            className={`mt-16 pt-8 border-t border-white/10 transition-all duration-700 ease-in-out ${
+            className={`mt-8 pt-8 border-t border-white/10 transition-all duration-700 ease-in-out ${
               menuAnimationComplete ? "opacity-100" : "opacity-0"
             }`}
           >
