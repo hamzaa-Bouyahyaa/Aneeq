@@ -144,8 +144,9 @@ interface Salon {
 const typedNearbySalons: Salon[] = nearbySalons as Salon[];
 
 const LuxuryHome = () => {
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  // Search functionality commented out as requested
+  // const [isSearchFocused, setIsSearchFocused] = useState(false);
+  // const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [selectedSalon, setSelectedSalon] = useState<Salon | null>(null);
 
@@ -163,11 +164,12 @@ const LuxuryHome = () => {
     };
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you would handle the search here
-    console.log("Searching for:", searchQuery);
-  };
+  // Search functionality commented out as requested
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // In a real app, you would handle the search here
+  //   console.log("Searching for:", searchQuery);
+  // };
 
   const handleUpdateLocation = () => {
     // In a real app, this would use the browser's geolocation API
@@ -210,11 +212,12 @@ const LuxuryHome = () => {
 
   return (
     <div className="bg-white">
-      {/* Hero Section with Single Video Background */}
+      {/* Hero Section with Single Video Background - Richard Mille Style */}
       <section className="relative h-screen">
         {/* Hero Video Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-black/50 z-10"></div>
+          {/* Gradient overlay for better text visibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 z-10"></div>
 
           {/* Single Video Element */}
           <div className="absolute inset-0 w-full h-full">
@@ -238,28 +241,43 @@ const LuxuryHome = () => {
           </div>
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-20 h-full flex items-center">
-          <div className="container-custom">
-            <div className="max-w-3xl mx-auto text-center text-white">
+        {/* Hero Content - Richard Mille Style (Bottom Left) */}
+        <div className="relative z-20 h-full">
+          <div className="absolute bottom-0 left-0 p-12 pb-20 max-w-xl">
+            <div className="text-white">
               <h1
-                className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-luxury mb-6 slide-up"
+                className="text-4xl text-white md:text-5xl lg:text-6xl font-display uppercase tracking-luxury mb-4 slide-up"
                 style={{ animationDelay: "0.3s" }}
               >
-                Luxury Beauty Experience
+                Luxury Beauty <span className="text-gold">Experience</span>
               </h1>
+              <div className="w-24 h-[2px] bg-gold mb-8"></div>
               <p
-                className="text-xl md:text-2xl mb-10 slide-up"
+                className="text-lg md:text-xl slide-up font-light tracking-wide"
                 style={{ animationDelay: "0.6s" }}
               >
                 Discover the finest Aneeq salons in Tunisia
               </p>
 
-              {/* Search Bar */}
-              <div
-                className="mt-12 slide-up"
-                style={{ animationDelay: "0.9s" }}
-              >
+              {/* Richard Mille style button */}
+              <div className="mt-8 slide-up" style={{ animationDelay: "0.9s" }}>
+                <a
+                  href="#featured-salons"
+                  className="inline-flex items-center group"
+                >
+                  <span className="w-10 h-[1px] bg-gold mr-4 transition-all duration-300 group-hover:w-16"></span>
+                  <span className="uppercase text-sm tracking-widest font-medium">
+                    Explore
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Search Bar - Commented out as requested */}
+          {/* <div className="container-custom">
+            <div className="max-w-3xl mx-auto text-center text-white">
+              <div className="mt-12 slide-up" style={{ animationDelay: "0.9s" }}>
                 <form
                   onSubmit={handleSearch}
                   className={`relative transition-all duration-500 ${
@@ -297,12 +315,12 @@ const LuxuryHome = () => {
                 </form>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
       {/* Featured Salons Section */}
-      <section className="py-24">
+      <section id="featured-salons" className="py-24">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="section-title">Featured Salons</h2>
