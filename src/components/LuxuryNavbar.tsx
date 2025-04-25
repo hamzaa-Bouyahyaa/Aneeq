@@ -133,7 +133,7 @@ const LuxuryNavbar = () => {
                     : "text-white"
                 }`}
               >
-                BeautySalon
+                Aneeq
               </span>
             </Link>
           </div>
@@ -271,7 +271,7 @@ const LuxuryNavbar = () => {
               <h3 className="text-gold font-display uppercase tracking-luxury text-xl mb-4">
                 Contact
               </h3>
-              <p className="text-white/80 mb-2">support@beautysalon.com</p>
+              <p className="text-white/80 mb-2">support@aneeq.com</p>
               <p className="text-white/80">+216 123 456 789</p>
             </div>
           </div>

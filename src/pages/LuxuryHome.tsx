@@ -1,82 +1,92 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // Mock data for salons
 const featuredSalons = [
   {
-    id: '1',
-    name: 'Glamour Beauty Salon',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    location: 'Tunis, Tunisia',
+    id: "1",
+    name: "Glamour Beauty Salon",
+    image:
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Tunis, Tunisia",
     rating: 4.8,
-    category: 'Full Service',
+    category: "Full Service",
   },
   {
-    id: '2',
-    name: 'Elegance Spa & Beauty',
-    image: 'https://images.unsplash.com/photo-1470259078422-826894b933aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    location: 'Sousse, Tunisia',
+    id: "2",
+    name: "Elegance Spa & Beauty",
+    image:
+      "https://images.unsplash.com/photo-1470259078422-826894b933aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Sousse, Tunisia",
     rating: 4.6,
-    category: 'Spa',
+    category: "Spa",
   },
   {
-    id: '3',
-    name: 'Chic Nails & Beauty',
-    image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    location: 'Sfax, Tunisia',
+    id: "3",
+    name: "Chic Nails & Beauty",
+    image:
+      "https://images.unsplash.com/photo-1522337660859-02fbefca4702?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Sfax, Tunisia",
     rating: 4.7,
-    category: 'Nails',
+    category: "Nails",
   },
 ];
 
 // Mock data for services
 const featuredServices = [
   {
-    id: '1',
-    name: 'Haircut & Styling',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    description: 'Expert haircuts and styling for any occasion',
+    id: "1",
+    name: "Haircut & Styling",
+    image:
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    description: "Expert haircuts and styling for any occasion",
   },
   {
-    id: '2',
-    name: 'Spa & Massage',
-    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    description: 'Relaxing treatments to rejuvenate your body and mind',
+    id: "2",
+    name: "Spa & Massage",
+    image:
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    description: "Relaxing treatments to rejuvenate your body and mind",
   },
   {
-    id: '3',
-    name: 'Makeup',
-    image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    description: 'Professional makeup for special events and everyday',
+    id: "3",
+    name: "Makeup",
+    image:
+      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    description: "Professional makeup for special events and everyday",
   },
   {
-    id: '4',
-    name: 'Nails',
-    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-    description: 'Manicures and pedicures with the latest trends',
+    id: "4",
+    name: "Nails",
+    image:
+      "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    description: "Manicures and pedicures with the latest trends",
   },
 ];
 
 const LuxuryHome = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const heroSlides = [
     {
-      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-      title: 'Luxury Beauty Experience',
-      subtitle: 'Discover the finest beauty salons in Tunisia',
+      image:
+        "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+      title: "Luxury Beauty Experience",
+      subtitle: "Discover the finest Aneeq salons in Tunisia",
     },
     {
-      image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-      title: 'Expert Beauty Services',
-      subtitle: 'Professional treatments tailored to your needs',
+      image:
+        "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+      title: "Expert Beauty Services",
+      subtitle: "Professional treatments tailored to your needs",
     },
     {
-      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
-      title: 'Relaxation & Wellness',
-      subtitle: 'Rejuvenate your body and mind',
+      image:
+        "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+      title: "Relaxation & Wellness",
+      subtitle: "Rejuvenate your body and mind",
     },
   ];
 
@@ -91,7 +101,7 @@ const LuxuryHome = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would handle the search here
-    console.log('Searching for:', searchQuery);
+    console.log("Searching for:", searchQuery);
   };
 
   return (
@@ -104,7 +114,7 @@ const LuxuryHome = () => {
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-2000 ${
-                activeSlide === index ? 'opacity-100' : 'opacity-0'
+                activeSlide === index ? "opacity-100" : "opacity-0"
               }`}
             >
               <div className="absolute inset-0 bg-black/50 z-10"></div>
@@ -121,16 +131,30 @@ const LuxuryHome = () => {
         <div className="relative z-20 h-full flex items-center">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center text-white">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-luxury mb-6 slide-up" style={{ animationDelay: '0.3s' }}>
+              <h1
+                className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-luxury mb-6 slide-up"
+                style={{ animationDelay: "0.3s" }}
+              >
                 {heroSlides[activeSlide].title}
               </h1>
-              <p className="text-xl md:text-2xl mb-10 slide-up" style={{ animationDelay: '0.6s' }}>
+              <p
+                className="text-xl md:text-2xl mb-10 slide-up"
+                style={{ animationDelay: "0.6s" }}
+              >
                 {heroSlides[activeSlide].subtitle}
               </p>
-              
+
               {/* Search Bar */}
-              <div className="mt-12 slide-up" style={{ animationDelay: '0.9s' }}>
-                <form onSubmit={handleSearch} className={`relative transition-all duration-500 ${isSearchFocused ? 'scale-105' : ''}`}>
+              <div
+                className="mt-12 slide-up"
+                style={{ animationDelay: "0.9s" }}
+              >
+                <form
+                  onSubmit={handleSearch}
+                  className={`relative transition-all duration-500 ${
+                    isSearchFocused ? "scale-105" : ""
+                  }`}
+                >
                   <input
                     type="text"
                     placeholder="Search for salons, services, or locations..."
@@ -161,14 +185,16 @@ const LuxuryHome = () => {
                   </button>
                 </form>
               </div>
-              
+
               {/* Slider Navigation */}
               <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-3">
                 {heroSlides.map((_, index) => (
                   <button
                     key={index}
                     className={`w-3 h-3 rounded-full transition-all ${
-                      activeSlide === index ? 'bg-gold w-8' : 'bg-white/50 hover:bg-white/80'
+                      activeSlide === index
+                        ? "bg-gold w-8"
+                        : "bg-white/50 hover:bg-white/80"
                     }`}
                     onClick={() => setActiveSlide(index)}
                   ></button>
@@ -186,7 +212,8 @@ const LuxuryHome = () => {
             <h2 className="section-title">Featured Salons</h2>
             <div className="luxury-divider mx-auto"></div>
             <p className="section-subtitle mx-auto">
-              Discover our handpicked selection of the finest beauty salons in Tunisia
+              Discover our handpicked selection of the finest Aneeq salons in
+              Tunisia
             </p>
           </div>
 
@@ -316,12 +343,15 @@ const LuxuryHome = () => {
                 </div>
                 <div className="absolute top-1/2 left-full w-full h-px bg-black/10 hidden md:block"></div>
               </div>
-              <h3 className="text-xl font-display uppercase tracking-wider mb-4">Discover</h3>
+              <h3 className="text-xl font-display uppercase tracking-wider mb-4">
+                Discover
+              </h3>
               <p className="text-black/70">
-                Browse through our curated selection of top-rated beauty salons and services
+                Browse through our curated selection of top-rated Aneeq salons
+                and services
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="relative mb-8">
                 <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-2xl font-display mx-auto">
@@ -329,21 +359,27 @@ const LuxuryHome = () => {
                 </div>
                 <div className="absolute top-1/2 left-full w-full h-px bg-black/10 hidden md:block"></div>
               </div>
-              <h3 className="text-xl font-display uppercase tracking-wider mb-4">Book</h3>
+              <h3 className="text-xl font-display uppercase tracking-wider mb-4">
+                Book
+              </h3>
               <p className="text-black/70">
-                Select your preferred date, time, and service for your appointment
+                Select your preferred date, time, and service for your
+                appointment
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="relative mb-8">
                 <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-2xl font-display mx-auto">
                   3
                 </div>
               </div>
-              <h3 className="text-xl font-display uppercase tracking-wider mb-4">Enjoy</h3>
+              <h3 className="text-xl font-display uppercase tracking-wider mb-4">
+                Enjoy
+              </h3>
               <p className="text-black/70">
-                Relax and enjoy your premium beauty treatment at your chosen salon
+                Relax and enjoy your premium beauty treatment at your chosen
+                salon
               </p>
             </div>
           </div>
@@ -358,7 +394,8 @@ const LuxuryHome = () => {
               Ready for Your Luxury Experience?
             </h2>
             <p className="text-xl text-white/70 mb-10">
-              Join thousands of satisfied customers who book their beauty appointments online
+              Join thousands of satisfied customers who book their beauty
+              appointments online
             </p>
             <Link to="/salons" className="btn-gold">
               Book Your Appointment

@@ -1,136 +1,157 @@
-import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
 // Mock data for salons
 const allSalons = [
   {
-    id: '1',
-    name: 'Glamour Beauty Salon',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "1",
+    name: "Glamour Beauty Salon",
+    image:
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.8,
     reviewCount: 124,
-    location: 'Tunis, Tunisia',
-    services: ['Haircut', 'Hair Coloring', 'Manicure', 'Pedicure', 'Facial'],
+    location: "Tunis, Tunisia",
+    services: ["Haircut", "Hair Coloring", "Manicure", "Pedicure", "Facial"],
     priceRange: [30, 150],
-    category: 'Full Service',
-    description: 'Luxury beauty salon offering a wide range of premium services in an elegant setting.',
+    category: "Full Service",
+    description:
+      "Luxury beauty salon offering a wide range of premium services in an elegant setting.",
   },
   {
-    id: '2',
-    name: 'Elegance Spa & Beauty',
-    image: 'https://images.unsplash.com/photo-1470259078422-826894b933aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "2",
+    name: "Elegance Spa & Beauty",
+    image:
+      "https://images.unsplash.com/photo-1470259078422-826894b933aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.6,
     reviewCount: 98,
-    location: 'Sousse, Tunisia',
-    services: ['Massage', 'Facial', 'Body Treatments', 'Waxing'],
+    location: "Sousse, Tunisia",
+    services: ["Massage", "Facial", "Body Treatments", "Waxing"],
     priceRange: [50, 200],
-    category: 'Spa',
-    description: 'Premium spa offering relaxing treatments to rejuvenate your body and mind.',
+    category: "Spa",
+    description:
+      "Premium spa offering relaxing treatments to rejuvenate your body and mind.",
   },
   {
-    id: '3',
-    name: 'Chic Nails & Beauty',
-    image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "3",
+    name: "Chic Nails & Beauty",
+    image:
+      "https://images.unsplash.com/photo-1522337660859-02fbefca4702?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.7,
     reviewCount: 87,
-    location: 'Sfax, Tunisia',
-    services: ['Manicure', 'Pedicure', 'Nail Art', 'Gel Nails'],
+    location: "Sfax, Tunisia",
+    services: ["Manicure", "Pedicure", "Nail Art", "Gel Nails"],
     priceRange: [20, 80],
-    category: 'Nails',
-    description: 'Specialized nail salon offering the latest trends and techniques in nail care.',
+    category: "Nails",
+    description:
+      "Specialized nail salon offering the latest trends and techniques in nail care.",
   },
   {
-    id: '4',
-    name: 'Luxe Hair Studio',
-    image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1669&q=80',
+    id: "4",
+    name: "Luxe Hair Studio",
+    image:
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1669&q=80",
     rating: 4.9,
     reviewCount: 156,
-    location: 'Tunis, Tunisia',
-    services: ['Haircut', 'Hair Styling', 'Hair Treatments', 'Hair Extensions'],
+    location: "Tunis, Tunisia",
+    services: ["Haircut", "Hair Styling", "Hair Treatments", "Hair Extensions"],
     priceRange: [40, 180],
-    category: 'Hair',
-    description: 'Premium hair salon specializing in cutting-edge styles and treatments.',
+    category: "Hair",
+    description:
+      "Premium hair salon specializing in cutting-edge styles and treatments.",
   },
   {
-    id: '5',
-    name: 'Zen Day Spa',
-    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "5",
+    name: "Zen Day Spa",
+    image:
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.5,
     reviewCount: 112,
-    location: 'Hammamet, Tunisia',
-    services: ['Massage', 'Facial', 'Body Scrub', 'Aromatherapy'],
+    location: "Hammamet, Tunisia",
+    services: ["Massage", "Facial", "Body Scrub", "Aromatherapy"],
     priceRange: [60, 200],
-    category: 'Spa',
-    description: 'Tranquil spa offering holistic treatments for complete relaxation and rejuvenation.',
+    category: "Spa",
+    description:
+      "Tranquil spa offering holistic treatments for complete relaxation and rejuvenation.",
   },
   {
-    id: '6',
-    name: 'Blush Beauty Lounge',
-    image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "6",
+    name: "Blush Beauty Lounge",
+    image:
+      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.3,
     reviewCount: 78,
-    location: 'Monastir, Tunisia',
-    services: ['Makeup', 'Eyebrow Shaping', 'Eyelash Extensions', 'Waxing'],
+    location: "Monastir, Tunisia",
+    services: ["Makeup", "Eyebrow Shaping", "Eyelash Extensions", "Waxing"],
     priceRange: [25, 120],
-    category: 'Makeup',
-    description: 'Specialized beauty lounge offering professional makeup and beauty services.',
+    category: "Makeup",
+    description:
+      "Specialized beauty lounge offering professional makeup and beauty services.",
   },
   {
-    id: '7',
-    name: 'Pure Skin Clinic',
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "7",
+    name: "Pure Skin Clinic",
+    image:
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.8,
     reviewCount: 143,
-    location: 'Tunis, Tunisia',
-    services: ['Facial', 'Skin Treatment', 'Microdermabrasion', 'Chemical Peel'],
+    location: "Tunis, Tunisia",
+    services: [
+      "Facial",
+      "Skin Treatment",
+      "Microdermabrasion",
+      "Chemical Peel",
+    ],
     priceRange: [70, 200],
-    category: 'Skin Care',
-    description: 'Advanced skin care clinic offering professional treatments for all skin types.',
+    category: "Skin Care",
+    description:
+      "Advanced skin care clinic offering professional treatments for all skin types.",
   },
   {
-    id: '8',
-    name: 'Trendy Cuts',
-    image: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80',
+    id: "8",
+    name: "Trendy Cuts",
+    image:
+      "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
     rating: 4.2,
     reviewCount: 65,
-    location: 'Bizerte, Tunisia',
-    services: ['Haircut', 'Hair Styling', 'Hair Coloring', 'Beard Trim'],
+    location: "Bizerte, Tunisia",
+    services: ["Haircut", "Hair Styling", "Hair Coloring", "Beard Trim"],
     priceRange: [20, 100],
-    category: 'Hair',
-    description: 'Modern hair salon offering trendy cuts and styles for men and women.',
+    category: "Hair",
+    description:
+      "Modern hair salon offering trendy cuts and styles for men and women.",
   },
 ];
 
 // Available service categories
 const serviceCategories = [
-  'All',
-  'Hair',
-  'Nails',
-  'Makeup',
-  'Spa',
-  'Skin Care',
+  "All",
+  "Hair",
+  "Nails",
+  "Makeup",
+  "Spa",
+  "Skin Care",
 ];
 
 const LuxurySalons = () => {
   const [searchParams] = useSearchParams();
   const [filteredSalons, setFilteredSalons] = useState(allSalons);
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [sortOption, setSortOption] = useState('recommended');
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [sortOption, setSortOption] = useState("recommended");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [visibleSalons, setVisibleSalons] = useState(4);
   const [isLoading, setIsLoading] = useState(false);
 
   // Get search parameters
-  const searchTerm = searchParams.get('search') || '';
-  const locationTerm = searchParams.get('location') || '';
+  const searchTerm = searchParams.get("search") || "";
+  const locationTerm = searchParams.get("location") || "";
 
   useEffect(() => {
     // Initialize search query from URL parameters
     if (searchTerm) {
       setSearchQuery(searchTerm);
     }
-    
+
     // Filter salons based on search parameters and active category
     filterSalons();
   }, [searchTerm, locationTerm, activeCategory, sortOption]);
@@ -157,19 +178,19 @@ const LuxurySalons = () => {
     }
 
     // Filter by category
-    if (activeCategory !== 'All') {
+    if (activeCategory !== "All") {
       result = result.filter((salon) => salon.category === activeCategory);
     }
 
     // Sort results
     switch (sortOption) {
-      case 'rating':
+      case "rating":
         result = [...result].sort((a, b) => b.rating - a.rating);
         break;
-      case 'price-low':
+      case "price-low":
         result = [...result].sort((a, b) => a.priceRange[0] - b.priceRange[0]);
         break;
-      case 'price-high':
+      case "price-high":
         result = [...result].sort((a, b) => b.priceRange[1] - a.priceRange[1]);
         break;
       default:
@@ -198,7 +219,7 @@ const LuxurySalons = () => {
 
   const loadMoreSalons = () => {
     setIsLoading(true);
-    
+
     // Simulate loading delay
     setTimeout(() => {
       setVisibleSalons((prev) => Math.min(prev + 4, filteredSalons.length));
@@ -214,7 +235,7 @@ const LuxurySalons = () => {
           <div className="absolute inset-0 bg-black/60 z-10"></div>
           <img
             src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80"
-            alt="Beauty Salons"
+            alt="Aneeq Salons"
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
@@ -223,11 +244,12 @@ const LuxurySalons = () => {
           <div className="container-custom">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display uppercase tracking-luxury text-white mb-6">
-                Beauty Salons
+                Aneeq Salons
               </h1>
               <div className="w-16 h-px bg-gold mb-6"></div>
               <p className="text-xl text-white/80 mb-8">
-                Discover and book appointments at the finest beauty salons in Tunisia
+                Discover and book appointments at the finest beauty salons in
+                Tunisia
               </p>
             </div>
           </div>
@@ -240,7 +262,12 @@ const LuxurySalons = () => {
           <div className="flex flex-col md:flex-row gap-8">
             {/* Search Bar */}
             <div className="md:w-2/3">
-              <form onSubmit={handleSearch} className={`relative transition-all duration-500 ${isSearchFocused ? 'scale-[1.02]' : ''}`}>
+              <form
+                onSubmit={handleSearch}
+                className={`relative transition-all duration-500 ${
+                  isSearchFocused ? "scale-[1.02]" : ""
+                }`}
+              >
                 <input
                   type="text"
                   placeholder="Search for salons, services, or locations..."
@@ -275,7 +302,9 @@ const LuxurySalons = () => {
             {/* Sort Options */}
             <div className="md:w-1/3">
               <div className="flex items-center h-full">
-                <span className="text-sm text-black/60 mr-3 whitespace-nowrap">Sort by:</span>
+                <span className="text-sm text-black/60 mr-3 whitespace-nowrap">
+                  Sort by:
+                </span>
                 <select
                   value={sortOption}
                   onChange={handleSortChange}
@@ -317,8 +346,8 @@ const LuxurySalons = () => {
                 key={category}
                 className={`px-6 py-2 text-sm uppercase tracking-wider transition-colors ${
                   activeCategory === category
-                    ? 'bg-black text-white'
-                    : 'bg-transparent text-black hover:bg-black/5'
+                    ? "bg-black text-white"
+                    : "bg-transparent text-black hover:bg-black/5"
                 }`}
                 onClick={() => handleCategoryChange(category)}
               >
@@ -336,7 +365,8 @@ const LuxurySalons = () => {
             <>
               <div className="mb-8">
                 <p className="text-black/60">
-                  Showing {Math.min(visibleSalons, filteredSalons.length)} of {filteredSalons.length} salons
+                  Showing {Math.min(visibleSalons, filteredSalons.length)} of{" "}
+                  {filteredSalons.length} salons
                 </p>
               </div>
 
@@ -374,7 +404,9 @@ const LuxurySalons = () => {
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
                           <span className="text-sm">{salon.rating}</span>
-                          <span className="text-sm text-black/60 ml-1">({salon.reviewCount})</span>
+                          <span className="text-sm text-black/60 ml-1">
+                            ({salon.reviewCount})
+                          </span>
                         </div>
                       </div>
                       <p className="text-black/60 flex items-center mb-3">
@@ -430,14 +462,30 @@ const LuxurySalons = () => {
                   >
                     {isLoading ? (
                       <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-black"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Loading...
                       </>
                     ) : (
-                      'Load More'
+                      "Load More"
                     )}
                   </button>
                 </div>
@@ -459,14 +507,17 @@ const LuxurySalons = () => {
                   d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <h3 className="text-xl font-display uppercase tracking-wider mb-2">No salons found</h3>
+              <h3 className="text-xl font-display uppercase tracking-wider mb-2">
+                No salons found
+              </h3>
               <p className="text-black/60 mb-8 max-w-md mx-auto">
-                We couldn't find any salons matching your search criteria. Please try different filters or search terms.
+                We couldn't find any salons matching your search criteria.
+                Please try different filters or search terms.
               </p>
               <button
                 onClick={() => {
-                  setActiveCategory('All');
-                  setSearchQuery('');
+                  setActiveCategory("All");
+                  setSearchQuery("");
                   filterSalons();
                 }}
                 className="btn-outline"
