@@ -74,7 +74,11 @@ const LuxuryNavbar = () => {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-500 ${
-          scrolled ? "bg-white py-3" : "bg-transparent py-5"
+          scrolled
+            ? isMenuOpen
+              ? "bg-transparent py-5"
+              : "bg-white py-3"
+            : "bg-transparent py-5"
         }`}
       >
         <div className="px-[56px] py-0 max-w-[none]">
