@@ -144,40 +144,24 @@ interface Salon {
 const typedNearbySalons: Salon[] = nearbySalons as Salon[];
 
 const LuxuryHome = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [selectedSalon, setSelectedSalon] = useState<Salon | null>(null);
 
-  const heroSlides = [
-    {
-      image:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
-      title: "Luxury Beauty Experience",
-      subtitle: "Discover the finest Aneeq salons in Tunisia",
-    },
-    {
-      image:
-        "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
-      title: "Expert Beauty Services",
-      subtitle: "Professional treatments tailored to your needs",
-    },
-    {
-      image:
-        "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
-      title: "Relaxation & Wellness",
-      subtitle: "Rejuvenate your body and mind",
-    },
-  ];
-
+  // Ensure video plays when component mounts
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
-    }, 6000);
+    const videoElement = document.querySelector("video");
+    if (videoElement) {
+      videoElement
+        .play()
+        .catch((err) => console.error("Video play error:", err));
+    }
 
-    return () => clearInterval(interval);
-  }, [heroSlides.length]);
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,25 +210,32 @@ const LuxuryHome = () => {
 
   return (
     <div className="bg-white">
-      {/* Hero Section */}
+      {/* Hero Section with Single Video Background */}
       <section className="relative h-screen">
-        {/* Hero Slider */}
+        {/* Hero Video Background */}
         <div className="absolute inset-0 overflow-hidden">
-          {heroSlides.map((slide, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-2000 ${
-                activeSlide === index ? "opacity-100" : "opacity-0"
-              }`}
+          <div className="absolute inset-0 bg-black/50 z-10"></div>
+
+          {/* Single Video Element */}
+          <div className="absolute inset-0 w-full h-full">
+            <video
+              src={`${
+                import.meta.env.BASE_URL
+              }src/assets/videos/barberShop.mp4`}
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
             >
-              <div className="absolute inset-0 bg-black/50 z-10"></div>
+              {/* Fallback for browsers that don't support video */}
               <img
-                src={slide.image}
-                alt={slide.title}
+                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80"
+                alt="Barber Shop"
                 className="absolute inset-0 w-full h-full object-cover"
               />
-            </div>
-          ))}
+            </video>
+          </div>
         </div>
 
         {/* Hero Content */}
@@ -255,13 +246,13 @@ const LuxuryHome = () => {
                 className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-luxury mb-6 slide-up"
                 style={{ animationDelay: "0.3s" }}
               >
-                {heroSlides[activeSlide].title}
+                Luxury Beauty Experience
               </h1>
               <p
                 className="text-xl md:text-2xl mb-10 slide-up"
                 style={{ animationDelay: "0.6s" }}
               >
-                {heroSlides[activeSlide].subtitle}
+                Discover the finest Aneeq salons in Tunisia
               </p>
 
               {/* Search Bar */}
@@ -304,21 +295,6 @@ const LuxuryHome = () => {
                     </svg>
                   </button>
                 </form>
-              </div>
-
-              {/* Slider Navigation */}
-              <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-3">
-                {heroSlides.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      activeSlide === index
-                        ? "bg-gold w-8"
-                        : "bg-white/50 hover:bg-white/80"
-                    }`}
-                    onClick={() => setActiveSlide(index)}
-                  ></button>
-                ))}
               </div>
             </div>
           </div>
