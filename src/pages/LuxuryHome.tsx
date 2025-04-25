@@ -32,6 +32,50 @@ const featuredSalons = [
   },
 ];
 
+// Mock data for nearby salons
+const nearbySalons = [
+  {
+    id: "4",
+    name: "Luxe Hair Studio",
+    image:
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1669&q=80",
+    location: "Tunis, Tunisia",
+    distance: "0.8 km",
+    rating: 4.9,
+    category: "Hair",
+  },
+  {
+    id: "5",
+    name: "Zen Day Spa",
+    image:
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Tunis, Tunisia",
+    distance: "1.2 km",
+    rating: 4.5,
+    category: "Spa",
+  },
+  {
+    id: "6",
+    name: "Blush Beauty Lounge",
+    image:
+      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Tunis, Tunisia",
+    distance: "1.5 km",
+    rating: 4.3,
+    category: "Makeup",
+  },
+  {
+    id: "7",
+    name: "Pure Skin Clinic",
+    image:
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80",
+    location: "Tunis, Tunisia",
+    distance: "2.3 km",
+    rating: 4.8,
+    category: "Skin Care",
+  },
+];
+
 // Mock data for services
 const featuredServices = [
   {
@@ -68,6 +112,7 @@ const LuxuryHome = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const heroSlides = [
     {
@@ -102,6 +147,45 @@ const LuxuryHome = () => {
     e.preventDefault();
     // In a real app, you would handle the search here
     console.log("Searching for:", searchQuery);
+  };
+
+  const handleUpdateLocation = () => {
+    // In a real app, this would use the browser's geolocation API
+    // to get the user's current location and then fetch nearby salons
+    if (navigator.geolocation) {
+      // Show loading state
+      setIsLoadingLocation(true);
+      console.log("Getting your location...");
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Success callback
+          console.log(
+            "Location found:",
+            position.coords.latitude,
+            position.coords.longitude
+          );
+          // In a real app, you would make an API call to get nearby salons based on these coordinates
+          setTimeout(() => {
+            setIsLoadingLocation(false);
+            alert("Location updated! Nearby salons have been refreshed.");
+          }, 1500); // Simulate API call delay
+        },
+        (error) => {
+          // Error callback
+          console.error("Error getting location:", error);
+          setIsLoadingLocation(false);
+          alert(
+            "Could not get your location. Please check your browser settings and try again."
+          );
+        },
+        { timeout: 10000, enableHighAccuracy: true }
+      );
+    } else {
+      alert(
+        "Geolocation is not supported by your browser. Please enter your location manually."
+      );
+    }
   };
 
   return (
@@ -288,8 +372,171 @@ const LuxuryHome = () => {
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Nearest Salons Section */}
       <section className="py-24 bg-gray-50">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="section-title">Nearest Salons</h2>
+            <div className="luxury-divider mx-auto"></div>
+            <p className="section-subtitle mx-auto">
+              Find the closest Aneeq salons to your current location
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {nearbySalons.map((salon) => (
+              <Link
+                key={salon.id}
+                to={`/salon/${salon.id}`}
+                className="group flex bg-white shadow-luxury overflow-hidden rounded-sm hover:shadow-xl transition-all duration-300"
+              >
+                <div className="w-1/3 relative overflow-hidden">
+                  <img
+                    src={salon.image}
+                    alt={salon.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
+                <div className="w-2/3 p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-display uppercase tracking-wider mb-2">
+                      {salon.name}
+                    </h3>
+                    <span className="text-xs uppercase tracking-wider text-gold bg-gold/10 px-2 py-1 rounded">
+                      {salon.category}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center text-black/70 mb-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 mr-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    {salon.location}
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-gold mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-sm font-medium">
+                        {salon.rating}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center text-black/70">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                      </svg>
+                      <span className="text-sm">{salon.distance}</span>
+                    </div>
+
+                    <button className="btn-gold py-2 px-4 text-xs">
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <button
+              onClick={handleUpdateLocation}
+              disabled={isLoadingLocation}
+              className={`btn-outline flex items-center mx-auto ${
+                isLoadingLocation ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoadingLocation ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 mr-2 text-gold"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Finding Nearby Salons...
+                </>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  Update My Location
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-24 bg-white">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="section-title">Our Services</h2>
