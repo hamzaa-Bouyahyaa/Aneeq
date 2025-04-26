@@ -84,58 +84,125 @@ const LuxuryNavbar = () => {
         <div className="px-[56px] py-0 max-w-[none]">
           <div className="flex items-center justify-between relative">
             {/* Menu Button - positioned at the left edge with higher z-index */}
-            <button
-              className={`flex items-center justify-center focus:outline-none z-[100] relative group ${
-                isMenuOpen
-                  ? "text-white"
-                  : scrolled
-                  ? "text-black"
-                  : "text-white"
-              }`}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <div className="flex flex-col items-center">
-                <div className="relative w-8 h-8 flex items-center justify-center">
-                  <span
-                    className={`absolute block w-5 h-0.5 transition-all duration-300 ease-out ${
-                      isMenuOpen
-                        ? "bg-white rotate-45"
-                        : `bg-current rotate-0 ${
-                            scrolled ? "bg-black" : "bg-white"
-                          }`
-                    }`}
-                  ></span>
-                  <span
-                    className={`absolute block w-5 h-0.5 transition-all duration-300 ease-out ${
-                      isMenuOpen
-                        ? "bg-white -rotate-45"
-                        : `bg-current rotate-0 translate-y-1.5 ${
-                            scrolled ? "bg-black" : "bg-white"
-                          }`
-                    }`}
-                  ></span>
-                </div>
-                <span className="uppercase text-xs tracking-widest font-medium mt-1">
-                  {isMenuOpen ? "" : "Menu"}
-                </span>
-              </div>
-            </button>
-
-            {/* Logo */}
-            <Link to="/" className="flex items-center z-50 relative">
-              <span
-                className={`text-2xl font-display tracking-luxury uppercase ${
+            <div className="flex-1">
+              <button
+                className={`flex items-center justify-center focus:outline-none z-[100] relative group ${
                   isMenuOpen
                     ? "text-white"
                     : scrolled
                     ? "text-black"
                     : "text-white"
                 }`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
               >
-                Aneeq
-              </span>
-            </Link>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-8 h-8 flex items-center justify-center">
+                    <span
+                      className={`absolute block w-5 h-0.5 transition-all duration-300 ease-out ${
+                        isMenuOpen
+                          ? "bg-white rotate-45"
+                          : `bg-current rotate-0 ${
+                              scrolled ? "bg-black" : "bg-white"
+                            }`
+                      }`}
+                    ></span>
+                    <span
+                      className={`absolute block w-5 h-0.5 transition-all duration-300 ease-out ${
+                        isMenuOpen
+                          ? "bg-white -rotate-45"
+                          : `bg-current rotate-0 translate-y-1.5 ${
+                              scrolled ? "bg-black" : "bg-white"
+                            }`
+                      }`}
+                    ></span>
+                  </div>
+                  <span className="uppercase text-xs tracking-widest font-medium mt-1">
+                    {isMenuOpen ? "" : "Menu"}
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            {/* Logo - Centered */}
+            <div className="flex-1 flex justify-center">
+              <Link to="/" className="flex items-center z-50 relative">
+                <span
+                  className={`text-2xl font-display tracking-luxury uppercase ${
+                    isMenuOpen
+                      ? "text-white"
+                      : scrolled
+                      ? "text-black"
+                      : "text-white"
+                  }`}
+                >
+                  Aneeq
+                </span>
+              </Link>
+            </div>
+
+            {/* Login/Signup Buttons - Right Side */}
+            <div className="flex-1 flex items-center justify-end space-x-2 md:space-x-4 z-50">
+              {/* Login Button */}
+              <Link
+                to="/login"
+                className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
+                  isMenuOpen
+                    ? "text-white hover:text-gold"
+                    : scrolled
+                    ? "text-black hover:text-gold"
+                    : "text-white hover:text-gold"
+                }`}
+              >
+                <span className="relative z-10 flex items-center">
+                  <span className="hidden sm:inline">Login</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5 sm:ml-1.5 transform transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </span>
+                <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+
+              {/* Sign Up Button */}
+              <Link
+                to="/signup"
+                className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
+                  isMenuOpen || !scrolled
+                    ? "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                    : "bg-gold text-white hover:bg-black"
+                }`}
+              >
+                <span className="relative z-10 flex items-center">
+                  <span className="hidden sm:inline">Sign Up</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5 sm:hidden"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                </span>
+                <span className="absolute inset-0 w-full h-full transform scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100 bg-black/10"></span>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -229,26 +296,6 @@ const LuxuryNavbar = () => {
               </h3>
               <ul className="space-y-6">
                 <li className={getMenuItemClass(5)}>
-                  <Link
-                    to="/login"
-                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Login
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                </li>
-                <li className={getMenuItemClass(6)}>
-                  <Link
-                    to="/signup"
-                    className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign Up
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                </li>
-                <li className={getMenuItemClass(7)}>
                   <Link
                     to="/book-appointment"
                     className="text-white hover:text-gold text-2xl md:text-3xl font-display uppercase tracking-luxury transition-colors relative group"
