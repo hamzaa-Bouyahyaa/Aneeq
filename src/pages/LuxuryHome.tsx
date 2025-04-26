@@ -504,12 +504,13 @@ const LuxuryHome = () => {
                       </div>
 
                       <div className="flex justify-between items-center">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedSalon(salon);
-                          }}
-                          className="text-navy hover:text-gold transition-colors text-sm flex items-center"
+                        <a
+                          href={`https://www.openstreetmap.org/?mlat=${salon.coordinates[0]}&mlon=${salon.coordinates[1]}&zoom=16&layers=M&marker=${salon.coordinates[0]},${salon.coordinates[1]}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-navy hover:text-gold transition-colors text-sm flex items-center group relative external-map-link"
+                          title="Opens in a new window"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -526,7 +527,21 @@ const LuxuryHome = () => {
                             />
                           </svg>
                           View Map
-                        </button>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 ml-1 opacity-70"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
 
                         <Link
                           to={`/salon/${salon.id}`}

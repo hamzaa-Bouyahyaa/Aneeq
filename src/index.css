@@ -19,6 +19,27 @@ html {
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
 }
 
+/* External link hover effect */
+.external-map-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.external-map-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.external-map-link:hover::after {
+  width: 100%;
+}
+
 @layer base {
   html {
     font-family: "Montserrat", system-ui, sans-serif;
