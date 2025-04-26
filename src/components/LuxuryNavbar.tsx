@@ -1,12 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import AuthModal from "./AuthModal";
 
 const LuxuryNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuAnimationComplete, setMenuAnimationComplete] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Function to open auth modal in login mode
+  const openLoginModal = () => {
+    setAuthMode("login");
+    setAuthModalOpen(true);
+    setIsMenuOpen(false); // Close menu drawer if open
+  };
+
+  // Function to open auth modal in signup mode
+  const openSignupModal = () => {
+    setAuthMode("signup");
+    setAuthModalOpen(true);
+    setIsMenuOpen(false); // Close menu drawer if open
+  };
 
   // Check initial scroll position
   useEffect(() => {
@@ -144,8 +161,8 @@ const LuxuryNavbar = () => {
             {/* Login/Signup Buttons - Right Side */}
             <div className="flex-1 flex items-center justify-end space-x-2 md:space-x-4 z-50">
               {/* Login Button */}
-              <Link
-                to="/login"
+              <button
+                onClick={openLoginModal}
                 className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
                   isMenuOpen
                     ? "text-white hover:text-gold"
@@ -172,11 +189,11 @@ const LuxuryNavbar = () => {
                   </svg>
                 </span>
                 <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </button>
 
               {/* Sign Up Button */}
-              <Link
-                to="/signup"
+              <button
+                onClick={openSignupModal}
                 className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
                   isMenuOpen || !scrolled
                     ? "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -201,7 +218,7 @@ const LuxuryNavbar = () => {
                   </svg>
                 </span>
                 <span className="absolute inset-0 w-full h-full transform scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100 bg-black/10"></span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -383,6 +400,12 @@ const LuxuryNavbar = () => {
           </div>
         </div>
       </div>
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </>
   );
 };
