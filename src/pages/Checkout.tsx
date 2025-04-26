@@ -11,8 +11,13 @@ const Checkout = () => {
     "details" | "payment" | "success"
   >("details");
   const [bookingDetails, setBookingDetails] = useState({
-    serviceName: "",
-    price: 0,
+    services: [] as Array<{
+      id?: string;
+      name?: string;
+      price?: number;
+      duration?: number;
+    }>,
+    totalPrice: 0,
     date: "",
     time: "",
     salonName: "",
@@ -29,8 +34,15 @@ const Checkout = () => {
     } else {
       // Mock data
       setBookingDetails({
-        serviceName: "Women's Haircut",
-        price: 50,
+        services: [
+          {
+            id: "1",
+            name: "Women's Haircut",
+            price: 50,
+            duration: 60,
+          },
+        ],
+        totalPrice: 50,
         date: "2023-12-15",
         time: "10:00",
         salonName: "Glamour Beauty Salon",
@@ -193,11 +205,30 @@ const Checkout = () => {
                   </h3>
                   <div className="space-y-4">
                     <div className="flex justify-between pb-2 border-b border-black/10">
-                      <span className="text-black/70">Service</span>
-                      <span className="font-medium">
-                        {bookingDetails.serviceName}
+                      <span className="text-black/70">Services</span>
+                      <span className="font-medium text-right">
+                        {bookingDetails.services.length > 1
+                          ? `${bookingDetails.services.length} Services Selected`
+                          : bookingDetails.services[0]?.name || ""}
                       </span>
                     </div>
+
+                    {bookingDetails.services.length > 1 && (
+                      <div className="pl-4 space-y-2 mb-2">
+                        {bookingDetails.services.map((service, index) => (
+                          <div
+                            key={service.id || index}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-black/70">
+                              • {service.name}
+                            </span>
+                            <span>{service.price} TND</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="flex justify-between pb-2 border-b border-black/10">
                       <span className="text-black/70">Date</span>
                       <span>{formatDate(bookingDetails.date)}</span>
@@ -219,15 +250,15 @@ const Checkout = () => {
                   </h3>
                   <div className="border border-black/10 p-6">
                     <div className="flex justify-between mb-4">
-                      <span className="text-black/70">Service Price</span>
+                      <span className="text-black/70">Services Subtotal</span>
                       <span className="font-medium">
-                        {bookingDetails.price.toFixed(2)} TND
+                        {bookingDetails.totalPrice.toFixed(2)} TND
                       </span>
                     </div>
                     <div className="flex justify-between mb-4">
                       <span className="text-black/70">Tax (19%)</span>
                       <span>
-                        {(bookingDetails.price * 0.19).toFixed(2)} TND
+                        {(bookingDetails.totalPrice * 0.19).toFixed(2)} TND
                       </span>
                     </div>
                     <div className="border-t border-black/10 mt-4 pt-4 flex justify-between">
@@ -235,7 +266,7 @@ const Checkout = () => {
                         Total
                       </span>
                       <span className="font-display text-xl">
-                        {(bookingDetails.price * 1.19).toFixed(2)} TND
+                        {(bookingDetails.totalPrice * 1.19).toFixed(2)} TND
                       </span>
                     </div>
                   </div>
@@ -263,8 +294,12 @@ const Checkout = () => {
           {/* Payment Step */}
           {paymentStep === "payment" && (
             <Payment
-              amount={bookingDetails.price}
-              serviceName={bookingDetails.serviceName}
+              amount={bookingDetails.totalPrice}
+              serviceName={
+                bookingDetails.services.length > 1
+                  ? `Multiple Services (${bookingDetails.services.length})`
+                  : bookingDetails.services[0]?.name || ""
+              }
               onSuccess={handlePaymentSuccess}
               onCancel={handlePaymentCancel}
             />
@@ -274,7 +309,11 @@ const Checkout = () => {
           {paymentStep === "success" && (
             <PaymentSuccess
               bookingId={bookingId}
-              serviceName={bookingDetails.serviceName}
+              serviceName={
+                bookingDetails.services.length > 1
+                  ? `Multiple Services (${bookingDetails.services.length})`
+                  : bookingDetails.services[0]?.name || ""
+              }
               date={formatDate(bookingDetails.date)}
               time={bookingDetails.time}
               salonName={bookingDetails.salonName}

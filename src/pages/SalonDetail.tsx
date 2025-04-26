@@ -113,7 +113,7 @@ const SalonDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("services");
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [showGalleryModal, setShowGalleryModal] = useState(false);
@@ -161,18 +161,31 @@ const SalonDetail = () => {
   };
 
   const handleBooking = () => {
-    // Get the selected service details
-    const service = salon.services.find((s) => s.id === selectedService);
+    // Get the selected services details
+    const services = selectedServices
+      .map((id) => salon.services.find((s) => s.id === id))
+      .filter(Boolean);
 
-    if (!service || !selectedDate || !selectedTime) {
-      alert("Please select a service, date, and time");
+    if (services.length === 0 || !selectedDate || !selectedTime) {
+      alert("Please select at least one service, date, and time");
       return;
     }
 
+    // Calculate total price
+    const totalPrice = services.reduce(
+      (total, service) => total + (service?.price || 0),
+      0
+    );
+
     // Create booking details to pass to the checkout page
     const bookingDetails = {
-      serviceName: service.name,
-      price: service.price,
+      services: services.map((service) => ({
+        id: service?.id,
+        name: service?.name,
+        price: service?.price,
+        duration: service?.duration,
+      })),
+      totalPrice,
       date: selectedDate,
       time: selectedTime,
       salonName: salon.name,
@@ -435,11 +448,18 @@ const SalonDetail = () => {
                         <div
                           key={service.id}
                           className={`group p-6 border cursor-pointer transition-all duration-300 hover:shadow-luxury ${
-                            selectedService === service.id
+                            selectedServices.includes(service.id)
                               ? "border-gold bg-gold/5"
                               : "border-black/10 hover:border-gold/50"
                           }`}
-                          onClick={() => setSelectedService(service.id)}
+                          onClick={() => {
+                            // Toggle service selection
+                            setSelectedServices((prev) =>
+                              prev.includes(service.id)
+                                ? prev.filter((id) => id !== service.id)
+                                : [...prev, service.id]
+                            );
+                          }}
                         >
                           <div className="flex justify-between items-start">
                             <div>
@@ -473,7 +493,7 @@ const SalonDetail = () => {
                             </div>
                           </div>
 
-                          {selectedService === service.id && (
+                          {selectedServices.includes(service.id) && (
                             <div className="mt-4 pt-4 border-t border-gold/30 text-sm text-black/70 animate-[fadeIn_0.3s_ease-in-out]">
                               Selected for booking
                             </div>
@@ -947,7 +967,7 @@ const SalonDetail = () => {
                 <div className="h-px w-16 bg-gold"></div>
               </div>
 
-              {!selectedService ? (
+              {selectedServices.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-20 h-20 rounded-full bg-black/5 flex items-center justify-center mx-auto mb-6">
                     <svg
@@ -966,8 +986,8 @@ const SalonDetail = () => {
                     </svg>
                   </div>
                   <p className="text-black/70 mb-6 leading-relaxed">
-                    Please select a service from the list to book your
-                    appointment
+                    Please select one or more services from the list to book
+                    your appointment
                   </p>
                   <button
                     onClick={() => setActiveTab("services")}
@@ -980,44 +1000,86 @@ const SalonDetail = () => {
                 <div className="animate-[fadeIn_0.5s_ease-in-out]">
                   <div className="mb-8">
                     <h3 className="text-sm uppercase tracking-wider text-black/60 mb-3">
-                      Selected Service
+                      Selected Services ({selectedServices.length})
                     </h3>
-                    <div className="p-4 border border-gold/30 bg-gold/5">
-                      <div className="font-display text-lg">
-                        {
-                          salon.services.find((s) => s.id === selectedService)
-                            ?.name
-                        }
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <div className="text-black/60 text-sm flex items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+
+                    {selectedServices.map((serviceId) => {
+                      const service = salon.services.find(
+                        (s) => s.id === serviceId
+                      );
+                      if (!service) return null;
+
+                      return (
+                        <div
+                          key={service.id}
+                          className="p-4 border border-gold/30 bg-gold/5 mb-3 relative"
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedServices((prev) =>
+                                prev.filter((id) => id !== service.id)
+                              );
+                            }}
+                            className="absolute top-2 right-2 text-black/40 hover:text-black transition-colors"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          {
-                            salon.services.find((s) => s.id === selectedService)
-                              ?.duration
-                          }{" "}
-                          minutes
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+
+                          <div className="font-display text-lg">
+                            {service.name}
+                          </div>
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="text-black/60 text-sm flex items-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 mr-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={1.5}
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              {service.duration} minutes
+                            </div>
+                            <div className="font-display">
+                              {service.price}{" "}
+                              <span className="text-sm">TND</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="font-display">
-                          {
-                            salon.services.find((s) => s.id === selectedService)
-                              ?.price
-                          }{" "}
-                          <span className="text-sm">TND</span>
-                        </div>
+                      );
+                    })}
+
+                    {/* Total Price */}
+                    <div className="mt-4 p-4 border-t border-black/10 flex justify-between items-center">
+                      <span className="font-medium">Total</span>
+                      <div className="font-display text-xl">
+                        {selectedServices.reduce((total, serviceId) => {
+                          const service = salon.services.find(
+                            (s) => s.id === serviceId
+                          );
+                          return total + (service?.price || 0);
+                        }, 0)}{" "}
+                        <span className="text-sm">TND</span>
                       </div>
                     </div>
                   </div>
@@ -1086,7 +1148,8 @@ const SalonDetail = () => {
                         onClick={handleBooking}
                         className="btn-gold w-full py-4 uppercase tracking-wider text-sm hover:bg-black hover:text-white transition-all duration-300"
                       >
-                        Book Appointment
+                        Book{" "}
+                        {selectedServices.length > 1 ? "Services" : "Service"}
                       </button>
 
                       <p className="text-xs text-center text-black/60 mt-4">
