@@ -105,20 +105,32 @@ const AuthModal = ({
   if (!isOpen) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
-      onClick={handleBackdropClick}
-    >
+    <>
+      {/* Backdrop overlay */}
       <div
-        className={`relative bg-white w-full max-w-md mx-4 rounded-sm shadow-luxury overflow-hidden transition-all duration-500 transform ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+        className={`fixed inset-0 z-[200] transition-all duration-700 ease-in-out ${
+          isVisible
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        onClick={handleBackdropClick}
+      >
+        {/* Empty div that covers the right side of the screen - clicking here closes the modal */}
+      </div>
+
+      {/* Auth drawer */}
+      <div
+        className={`fixed top-0 bottom-0 right-0 w-full md:w-1/3 bg-black bg-opacity-90 z-[210] transition-all duration-500 ease-in-out transform ${
+          isVisible
+            ? "translate-x-0 opacity-100 pointer-events-auto"
+            : "translate-x-full opacity-0 pointer-events-none"
+        }`}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
-          className="absolute top-4 right-4 text-black/40 hover:text-black transition-colors z-10"
+          className="absolute top-6 right-6 text-white/60 hover:text-gold transition-colors z-10"
           onClick={onClose}
         >
           <svg
@@ -140,16 +152,28 @@ const AuthModal = ({
         {/* Gold accent line */}
         <div className="h-1 w-full bg-gold"></div>
 
-        <div className="p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-display uppercase tracking-luxury">
+        <div className="h-full flex flex-col justify-between py-20 px-8 md:px-12 overflow-y-auto">
+          <div className="mb-12">
+            <h2
+              className={`text-3xl md:text-4xl font-display uppercase tracking-luxury text-gold transition-all duration-700 ease-in-out ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
               {isForgotPassword
                 ? "Reset Password"
                 : isLogin
                 ? "Login"
                 : "Create Account"}
             </h2>
-            <p className="text-black/60 mt-2 text-sm">
+            <p
+              className={`text-white/60 mt-4 text-sm transition-all duration-700 delay-100 ease-in-out ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
               {isForgotPassword
                 ? "Enter your email to receive reset instructions"
                 : isLogin
@@ -158,12 +182,18 @@ const AuthModal = ({
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {!isLogin && (
-              <div className="space-y-2">
+              <div
+                className={`space-y-2 transition-all duration-700 delay-150 ease-in-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
                 <label
                   htmlFor="name"
-                  className="block text-sm uppercase tracking-wider text-black/60"
+                  className="block text-sm uppercase tracking-wider text-gold"
                 >
                   Full Name
                 </label>
@@ -172,17 +202,23 @@ const AuthModal = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/5 border-b border-black/10 focus:border-gold transition-colors outline-none"
+                  className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
                   placeholder="Enter your full name"
                   required
                 />
               </div>
             )}
 
-            <div className="space-y-2">
+            <div
+              className={`space-y-2 transition-all duration-700 delay-200 ease-in-out ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
               <label
                 htmlFor="email"
-                className="block text-sm uppercase tracking-wider text-black/60"
+                className="block text-sm uppercase tracking-wider text-gold"
               >
                 Email
               </label>
@@ -191,17 +227,23 @@ const AuthModal = ({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-black/5 border-b border-black/10 focus:border-gold transition-colors outline-none"
+                className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
                 placeholder="Enter your email"
                 required
               />
             </div>
 
             {!isForgotPassword && (
-              <div className="space-y-2">
+              <div
+                className={`space-y-2 transition-all duration-700 delay-250 ease-in-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
                 <label
                   htmlFor="password"
-                  className="block text-sm uppercase tracking-wider text-black/60"
+                  className="block text-sm uppercase tracking-wider text-gold"
                 >
                   Password
                 </label>
@@ -210,7 +252,7 @@ const AuthModal = ({
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/5 border-b border-black/10 focus:border-gold transition-colors outline-none"
+                  className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
                   placeholder="Enter your password"
                   required={!isForgotPassword}
                 />
@@ -218,16 +260,22 @@ const AuthModal = ({
             )}
 
             {isLogin && (
-              <div className="flex items-center justify-between">
+              <div
+                className={`flex items-center justify-between transition-all duration-700 delay-300 ease-in-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
                 <div className="flex items-center">
                   <input
                     id="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 border-black/30 rounded accent-gold"
+                    className="h-4 w-4 border-white/30 bg-transparent rounded accent-gold"
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-2 block text-sm text-black/60"
+                    className="ml-2 block text-sm text-white/60"
                   >
                     Remember me
                   </label>
@@ -235,7 +283,7 @@ const AuthModal = ({
                 <div className="text-sm">
                   <button
                     type="button"
-                    className="text-gold hover:text-black transition-colors"
+                    className="text-gold hover:text-white transition-colors"
                     onClick={() => {
                       setIsForgotPassword(true);
                       setError(null);
@@ -249,11 +297,11 @@ const AuthModal = ({
             )}
 
             {successMessage && (
-              <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+              <div className="border-l-4 border-gold bg-white/5 p-4 mb-4 transition-all duration-300">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
-                      className="h-5 w-5 text-green-500"
+                      className="h-5 w-5 text-gold"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
@@ -266,14 +314,14 @@ const AuthModal = ({
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm text-green-700">{successMessage}</p>
+                    <p className="text-sm text-white">{successMessage}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+              <div className="border-l-4 border-red-500 bg-white/5 p-4 mb-4 transition-all duration-300">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
@@ -290,7 +338,7 @@ const AuthModal = ({
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm text-red-700">{error}</p>
+                    <p className="text-sm text-white">{error}</p>
                   </div>
                 </div>
               </div>
@@ -299,14 +347,18 @@ const AuthModal = ({
             <button
               type="submit"
               disabled={loading}
-              className={`w-full bg-gold text-white py-3 uppercase tracking-wider text-sm hover:bg-black transition-colors duration-300 ${
+              className={`w-full bg-gold text-white py-4 uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-all duration-300 ${
                 loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+              } ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              } transition-all duration-700 delay-350 ease-in-out`}
             >
               {loading ? (
                 <span className="flex items-center justify-center">
                   <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -341,27 +393,47 @@ const AuthModal = ({
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div
+            className={`mt-8 text-center transition-all duration-700 delay-400 ease-in-out ${
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
+            }`}
+          >
             {isForgotPassword ? (
               <button
                 type="button"
-                className="text-gold hover:text-black transition-colors"
+                className="text-gold hover:text-white transition-colors flex items-center mx-auto"
                 onClick={() => {
                   setIsForgotPassword(false);
                   setError(null);
                   setSuccessMessage(null);
                 }}
               >
-                ← Back to Login
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                Back to Login
               </button>
             ) : (
-              <p className="text-sm text-black/60">
+              <p className="text-sm text-white/60">
                 {isLogin
                   ? "Don't have an account?"
                   : "Already have an account?"}
                 <button
                   type="button"
-                  className="ml-1 text-gold hover:text-black transition-colors"
+                  className="ml-1 text-gold hover:text-white transition-colors"
                   onClick={() => setIsLogin(!isLogin)}
                 >
                   {isLogin ? "Sign up" : "Login"}
@@ -371,19 +443,25 @@ const AuthModal = ({
           </div>
 
           {!isForgotPassword && (
-            <div className="mt-8">
+            <div
+              className={`mt-12 transition-all duration-700 delay-450 ease-in-out ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-black/10"></div>
+                  <div className="w-full border-t border-white/10"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-black/40 uppercase tracking-wider text-xs">
+                  <span className="px-2 bg-black text-white/40 uppercase tracking-wider text-xs">
                     Or continue with
                   </span>
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="mt-8 grid grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={async () => {
@@ -405,7 +483,7 @@ const AuthModal = ({
                     }
                   }}
                   disabled={loading}
-                  className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center py-4 px-4 border border-white/20 bg-transparent text-white hover:bg-white/5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path
@@ -435,7 +513,7 @@ const AuthModal = ({
                     }
                   }}
                   disabled={loading}
-                  className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center py-4 px-4 border border-white/20 bg-transparent text-white hover:bg-white/5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path
@@ -449,7 +527,7 @@ const AuthModal = ({
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
