@@ -21,6 +21,7 @@ const AuthModal = ({
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
   const {
     signIn,
     signUp,
@@ -48,7 +49,7 @@ const AuthModal = ({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isOpen, initialMode]);
 
   useEffect(() => {
     // Reset form when switching between login and signup
@@ -81,11 +82,19 @@ const AuthModal = ({
         onClose();
       } else {
         // Handle signup with Supabase
-        const { error } = await signUp(email, password, name);
+        const { error, data } = await signUp(email, password, name);
         if (error) throw error;
 
-        // Close modal after successful auth
-        onClose();
+        // If no session is returned, it means email confirmation is required
+        if (!data) {
+          setIsVerificationSent(true);
+          setSuccessMessage(
+            `A verification email has been sent to ${email}. Please check your inbox and verify your email to continue.`
+          );
+        } else {
+          // Close modal after successful auth (if auto-confirm is enabled)
+          onClose();
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -163,6 +172,8 @@ const AuthModal = ({
             >
               {isForgotPassword
                 ? "Reset Password"
+                : isVerificationSent
+                ? "Verify Your Email"
                 : isLogin
                 ? "Login"
                 : "Create Account"}
@@ -176,222 +187,276 @@ const AuthModal = ({
             >
               {isForgotPassword
                 ? "Enter your email to receive reset instructions"
+                : isVerificationSent
+                ? "Please check your inbox and verify your email to continue"
                 : isLogin
                 ? "Welcome back to Aneeq"
                 : "Join Aneeq to book luxury salon appointments"}
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {!isLogin && (
+          {isVerificationSent ? (
+            <div className={`space-y-8 transition-all duration-700 ease-in-out ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}>
+              <div className="bg-white/5 p-6 rounded-sm border-l-4 border-gold">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-white">Verification Email Sent</h3>
+                    <p className="mt-2 text-sm text-white/70">
+                      We've sent a verification email to <span className="text-gold font-medium">{email}</span>. 
+                      Please check your inbox and click the verification link to activate your account.
+                    </p>
+                    <div className="mt-4">
+                      <p className="text-sm text-white/70">
+                        Didn't receive the email? Check your spam folder or
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsVerificationSent(false);
+                            setIsLogin(true);
+                          }}
+                          className="ml-1 text-gold hover:text-white transition-colors"
+                        >
+                          try logging in
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  setIsVerificationSent(false);
+                  setIsLogin(true);
+                  setEmail("");
+                  setPassword("");
+                  setName("");
+                }}
+                className="w-full bg-white/10 text-white py-4 uppercase tracking-wider text-sm hover:bg-white/20 transition-all duration-300"
+              >
+                Back to Login
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {!isLogin && !isForgotPassword && (
+                <div
+                  className={`space-y-2 transition-all duration-700 delay-150 ease-in-out ${
+                    isVisible
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-8 opacity-0"
+                  }`}
+                >
+                  <label
+                    htmlFor="name"
+                    className="block text-sm uppercase tracking-wider text-gold"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+              )}
+
               <div
-                className={`space-y-2 transition-all duration-700 delay-150 ease-in-out ${
+                className={`space-y-2 transition-all duration-700 delay-200 ease-in-out ${
                   isVisible
                     ? "translate-y-0 opacity-100"
                     : "translate-y-8 opacity-0"
                 }`}
               >
                 <label
-                  htmlFor="name"
+                  htmlFor="email"
                   className="block text-sm uppercase tracking-wider text-gold"
                 >
-                  Full Name
+                  Email
                 </label>
                 <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your email"
                   required
                 />
               </div>
-            )}
 
-            <div
-              className={`space-y-2 transition-all duration-700 delay-200 ease-in-out ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-8 opacity-0"
-              }`}
-            >
-              <label
-                htmlFor="email"
-                className="block text-sm uppercase tracking-wider text-gold"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-
-            {!isForgotPassword && (
-              <div
-                className={`space-y-2 transition-all duration-700 delay-250 ease-in-out ${
-                  isVisible
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-8 opacity-0"
-                }`}
-              >
-                <label
-                  htmlFor="password"
-                  className="block text-sm uppercase tracking-wider text-gold"
+              {!isForgotPassword && (
+                <div
+                  className={`space-y-2 transition-all duration-700 delay-250 ease-in-out ${
+                    isVisible
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-8 opacity-0"
+                  }`}
                 >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
-                  placeholder="Enter your password"
-                  required={!isForgotPassword}
-                />
-              </div>
-            )}
+                  <label
+                    htmlFor="password"
+                    className="block text-sm uppercase tracking-wider text-gold"
+                  >
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 bg-transparent border-b border-white/20 focus:border-gold text-white placeholder-white/30 transition-colors outline-none"
+                    placeholder="Enter your password"
+                    required={!isForgotPassword}
+                  />
+                </div>
+              )}
 
-            {isLogin && (
-              <div
-                className={`flex items-center justify-between transition-all duration-700 delay-300 ease-in-out ${
+              {isLogin && !isForgotPassword && (
+                <div
+                  className={`flex items-center justify-between transition-all duration-700 delay-300 ease-in-out ${
+                    isVisible
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-8 opacity-0"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <input
+                      id="remember-me"
+                      type="checkbox"
+                      className="h-4 w-4 border-white/30 bg-transparent rounded accent-gold"
+                    />
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-white/60"
+                    >
+                      Remember me
+                    </label>
+                  </div>
+                  <div className="text-sm">
+                    <button
+                      type="button"
+                      className="text-gold hover:text-white transition-colors"
+                      onClick={() => {
+                        setIsForgotPassword(true);
+                        setError(null);
+                        setSuccessMessage(null);
+                      }}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="border-l-4 border-gold bg-white/5 p-4 mb-4 transition-all duration-300">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="h-5 w-5 text-gold"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm text-white">{successMessage}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="border-l-4 border-red-500 bg-white/5 p-4 mb-4 transition-all duration-300">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="h-5 w-5 text-red-500"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm text-white">{error}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full bg-gold text-white py-4 uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-all duration-300 ${
+                  loading ? "opacity-70 cursor-not-allowed" : ""
+                } ${
                   isVisible
                     ? "translate-y-0 opacity-100"
                     : "translate-y-8 opacity-0"
-                }`}
+                } transition-all duration-700 delay-350 ease-in-out`}
               >
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 border-white/30 bg-transparent rounded accent-gold"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="ml-2 block text-sm text-white/60"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <button
-                    type="button"
-                    className="text-gold hover:text-white transition-colors"
-                    onClick={() => {
-                      setIsForgotPassword(true);
-                      setError(null);
-                      setSuccessMessage(null);
-                    }}
-                  >
-                    Forgot password?
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {successMessage && (
-              <div className="border-l-4 border-gold bg-white/5 p-4 mb-4 transition-all duration-300">
-                <div className="flex">
-                  <div className="flex-shrink-0">
+                {loading ? (
+                  <span className="flex items-center justify-center">
                     <svg
-                      className="h-5 w-5 text-gold"
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
                       xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                      fill="none"
+                      viewBox="0 0 24 24"
                     >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
                       <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-white">{successMessage}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {error && (
-              <div className="border-l-4 border-red-500 bg-white/5 p-4 mb-4 transition-all duration-300">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-red-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-white">{error}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full bg-gold text-white py-4 uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-all duration-300 ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              } ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-8 opacity-0"
-              } transition-all duration-700 delay-350 ease-in-out`}
-            >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  {isForgotPassword
-                    ? "Sending Reset Link..."
-                    : isLogin
-                    ? "Logging in..."
-                    : "Creating Account..."}
-                </span>
-              ) : isForgotPassword ? (
-                "Send Reset Link"
-              ) : isLogin ? (
-                "Login"
-              ) : (
-                "Create Account"
-              )}
-            </button>
-          </form>
+                    {isForgotPassword
+                      ? "Sending Reset Link..."
+                      : isLogin
+                      ? "Logging in..."
+                      : "Creating Account..."}
+                  </span>
+                ) : isForgotPassword ? (
+                  "Send Reset Link"
+                ) : isLogin ? (
+                  "Login"
+                ) : (
+                  "Create Account"
+                )}
+              </button>
+            </form>
+          )}
 
           <div
             className={`mt-8 text-center transition-all duration-700 delay-400 ease-in-out ${
@@ -426,7 +491,7 @@ const AuthModal = ({
                 </svg>
                 Back to Login
               </button>
-            ) : (
+            ) : !isVerificationSent && (
               <p className="text-sm text-white/60">
                 {isLogin
                   ? "Don't have an account?"
@@ -442,12 +507,10 @@ const AuthModal = ({
             )}
           </div>
 
-          {!isForgotPassword && (
+          {!isForgotPassword && !isVerificationSent && (
             <div
               className={`mt-12 transition-all duration-700 delay-450 ease-in-out ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-8 opacity-0"
+                isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
             >
               <div className="relative">

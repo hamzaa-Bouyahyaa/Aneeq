@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import AuthModal from "./AuthModal";
+import { useAuth } from "../contexts/AuthContext";
 
 const LuxuryNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,8 +9,13 @@ const LuxuryNavbar = () => {
   const [menuAnimationComplete, setMenuAnimationComplete] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Get auth context
+  const { user, signOut, loading } = useAuth();
 
   // Function to open auth modal in login mode
   const openLoginModal = () => {
@@ -75,6 +81,34 @@ const LuxuryNavbar = () => {
       document.body.style.overflow = "auto";
     };
   }, [isMenuOpen]);
+
+  // Handle clicks outside the user menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle user menu toggle
+  // const toggleUserMenu = () => {
+  //   setUserMenuOpen((prev) => !prev);
+  // };
+
+  // Handle logout
+  const handleLogout = async () => {
+    await signOut();
+    setUserMenuOpen(false);
+  };
 
   // We'll use this directly in the onClick handler
 
@@ -158,67 +192,144 @@ const LuxuryNavbar = () => {
               </Link>
             </div>
 
-            {/* Login/Signup Buttons - Right Side */}
+            {/* Login/Signup Buttons or User Avatar - Right Side */}
             <div className="flex-1 flex items-center justify-end space-x-2 md:space-x-4 z-50">
-              {/* Login Button */}
-              <button
-                onClick={openLoginModal}
-                className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
-                  isMenuOpen
-                    ? "text-white hover:text-gold"
-                    : scrolled
-                    ? "text-black hover:text-gold"
-                    : "text-white hover:text-gold"
-                }`}
-              >
-                <span className="relative z-10 flex items-center">
-                  <span className="hidden sm:inline">Login</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5 sm:ml-1.5 transform transition-transform duration-300 group-hover:translate-x-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </span>
-                <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full"></span>
-              </button>
+              {!loading && (
+                <>
+                  {user ? (
+                    <div className="relative">
+                      {/* User Avatar and Name */}
+                      <button
+                        onClick={() => setUserMenuOpen((prev) => !prev)}
+                        className={`flex items-center space-x-2 focus:outline-none ${
+                          isMenuOpen
+                            ? "text-white"
+                            : scrolled
+                            ? "text-black"
+                            : "text-white"
+                        }`}
+                      >
+                        <div className="flex items-center">
+                          <span className="hidden md:block mr-2 text-sm font-medium">
+                            {user.user_metadata?.full_name ||
+                              user.email?.split("@")[0]}
+                          </span>
+                          <div
+                            className={`h-8 w-8 rounded-full flex items-center justify-center text-white ${
+                              isMenuOpen || !scrolled ? "bg-gold" : "bg-gold"
+                            }`}
+                          >
+                            {user.user_metadata?.full_name
+                              ? user.user_metadata.full_name
+                                  .charAt(0)
+                                  .toUpperCase()
+                              : user.email?.charAt(0).toUpperCase() || "A"}
+                          </div>
+                        </div>
+                      </button>
 
-              {/* Sign Up Button */}
-              <button
-                onClick={openSignupModal}
-                className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
-                  isMenuOpen || !scrolled
-                    ? "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
-                    : "bg-gold text-white hover:bg-black"
-                }`}
-              >
-                <span className="relative z-10 flex items-center">
-                  <span className="hidden sm:inline">Sign Up</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5 sm:hidden"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                    />
-                  </svg>
-                </span>
-                <span className="absolute inset-0 w-full h-full transform scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100 bg-black/10"></span>
-              </button>
+                      {/* User Dropdown Menu */}
+                      {userMenuOpen && (
+                        <div
+                          ref={userMenuRef}
+                          className="absolute right-0 mt-2 w-48 bg-white shadow-luxury rounded-sm py-1 z-50"
+                        >
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <p className="text-sm font-medium text-gray-900">
+                              {user.user_metadata?.full_name || "User"}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            Profile
+                          </Link>
+                          <Link
+                            to="/bookings"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            My Bookings
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Sign out
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      {/* Login Button */}
+                      <button
+                        onClick={openLoginModal}
+                        className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
+                          isMenuOpen
+                            ? "text-white hover:text-gold"
+                            : scrolled
+                            ? "text-black hover:text-gold"
+                            : "text-white hover:text-gold"
+                        }`}
+                      >
+                        <span className="relative z-10 flex items-center">
+                          <span className="hidden sm:inline">Login</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3.5 w-3.5 sm:ml-1.5 transform transition-transform duration-300 group-hover:translate-x-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                          </svg>
+                        </span>
+                        <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full"></span>
+                      </button>
+
+                      {/* Sign Up Button */}
+                      <button
+                        onClick={openSignupModal}
+                        className={`relative overflow-hidden group px-3 md:px-5 py-2 text-sm uppercase tracking-wider font-medium transition-all duration-300 ${
+                          isMenuOpen || !scrolled
+                            ? "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                            : "bg-gold text-white hover:bg-black"
+                        }`}
+                      >
+                        <span className="relative z-10 flex items-center">
+                          <span className="hidden sm:inline">Sign Up</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3.5 w-3.5 sm:hidden"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                            />
+                          </svg>
+                        </span>
+                        <span className="absolute inset-0 w-full h-full transform scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100 bg-black/10"></span>
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>

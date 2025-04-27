@@ -40,6 +40,11 @@ interface AuthContextType {
     error: Error | null;
     data: Session | null;
   }>;
+  getMe: () => Promise<{
+    error: Error | null;
+    data: User | null;
+  }>;
+  isEmailVerified: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,12 +53,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+        // Check if email is verified
+        setIsEmailVerified(session.user.email_confirmed_at !== null);
+      } else {
+        setUser(null);
+        setIsEmailVerified(false);
+      }
       setLoading(false);
     });
 
@@ -62,7 +75,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+        // Check if email is verified
+        setIsEmailVerified(session.user.email_confirmed_at !== null);
+      } else {
+        setUser(null);
+        setIsEmailVerified(false);
+      }
       setLoading(false);
     });
 
@@ -132,14 +152,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}`,
         },
       });
 
-      return { data: data.session, error };
+      // OAuth redirects, so we don't have a session immediately
+      return { data: null, error };
     } catch (error) {
       return { data: null, error: error as Error };
     }
@@ -147,14 +168,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithFacebook = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
         options: {
           redirectTo: `${window.location.origin}`,
         },
       });
 
-      return { data: data.session, error };
+      // OAuth redirects, so we don't have a session immediately
+      return { data: null, error };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  };
+
+  const getMe = async () => {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) throw error;
+
+      if (data?.user) {
+        setUser(data.user);
+        setIsEmailVerified(data.user.email_confirmed_at !== null);
+      }
+
+      return { data: data?.user || null, error: null };
     } catch (error) {
       return { data: null, error: error as Error };
     }
@@ -170,6 +209,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     resetPassword,
     signInWithGoogle,
     signInWithFacebook,
+    getMe,
+    isEmailVerified,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
