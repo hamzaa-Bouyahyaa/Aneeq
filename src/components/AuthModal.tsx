@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,6 +17,17 @@ const AuthModal = ({
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const {
+    signIn,
+    signUp,
+    signInWithGoogle,
+    signInWithFacebook,
+    resetPassword,
+  } = useAuth();
 
   // Handle modal visibility with animation
   useEffect(() => {
@@ -45,20 +57,42 @@ const AuthModal = ({
     setName("");
   }, [isLogin]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setSuccessMessage(null);
+    setLoading(true);
 
-    // In a real app, you would handle authentication with a backend
-    if (isLogin) {
-      // Handle login
-      console.log("Logging in with:", { email, password });
-    } else {
-      // Handle signup
-      console.log("Signing up with:", { name, email, password });
+    try {
+      if (isForgotPassword) {
+        // Handle password reset
+        const { error } = await resetPassword(email);
+        if (error) throw error;
+
+        setSuccessMessage(
+          "Password reset instructions have been sent to your email"
+        );
+      } else if (isLogin) {
+        // Handle login with Supabase
+        const { error } = await signIn(email, password);
+        if (error) throw error;
+
+        // Close modal after successful auth
+        onClose();
+      } else {
+        // Handle signup with Supabase
+        const { error } = await signUp(email, password, name);
+        if (error) throw error;
+
+        // Close modal after successful auth
+        onClose();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Authentication error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    // Close modal after successful auth
-    onClose();
   };
 
   // Close modal when clicking outside
@@ -109,10 +143,16 @@ const AuthModal = ({
         <div className="p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-display uppercase tracking-luxury">
-              {isLogin ? "Login" : "Create Account"}
+              {isForgotPassword
+                ? "Reset Password"
+                : isLogin
+                ? "Login"
+                : "Create Account"}
             </h2>
             <p className="text-black/60 mt-2 text-sm">
-              {isLogin
+              {isForgotPassword
+                ? "Enter your email to receive reset instructions"
+                : isLogin
                 ? "Welcome back to Aneeq"
                 : "Join Aneeq to book luxury salon appointments"}
             </p>
@@ -157,23 +197,25 @@ const AuthModal = ({
               />
             </div>
 
-            <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm uppercase tracking-wider text-black/60"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-black/5 border-b border-black/10 focus:border-gold transition-colors outline-none"
-                placeholder="Enter your password"
-                required
-              />
-            </div>
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm uppercase tracking-wider text-black/60"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-black/5 border-b border-black/10 focus:border-gold transition-colors outline-none"
+                  placeholder="Enter your password"
+                  required={!isForgotPassword}
+                />
+              </div>
+            )}
 
             {isLogin && (
               <div className="flex items-center justify-between">
@@ -194,6 +236,11 @@ const AuthModal = ({
                   <button
                     type="button"
                     className="text-gold hover:text-black transition-colors"
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                      setError(null);
+                      setSuccessMessage(null);
+                    }}
                   >
                     Forgot password?
                   </button>
@@ -201,64 +248,205 @@ const AuthModal = ({
               </div>
             )}
 
+            {successMessage && (
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-green-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-green-700">{successMessage}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-red-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-gold text-white py-3 uppercase tracking-wider text-sm hover:bg-black transition-colors duration-300"
+              disabled={loading}
+              className={`w-full bg-gold text-white py-3 uppercase tracking-wider text-sm hover:bg-black transition-colors duration-300 ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              {isLogin ? "Login" : "Create Account"}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  {isForgotPassword
+                    ? "Sending Reset Link..."
+                    : isLogin
+                    ? "Logging in..."
+                    : "Creating Account..."}
+                </span>
+              ) : isForgotPassword ? (
+                "Send Reset Link"
+              ) : isLogin ? (
+                "Login"
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-black/60">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
+            {isForgotPassword ? (
               <button
                 type="button"
-                className="ml-1 text-gold hover:text-black transition-colors"
-                onClick={() => setIsLogin(!isLogin)}
+                className="text-gold hover:text-black transition-colors"
+                onClick={() => {
+                  setIsForgotPassword(false);
+                  setError(null);
+                  setSuccessMessage(null);
+                }}
               >
-                {isLogin ? "Sign up" : "Login"}
+                ← Back to Login
               </button>
-            </p>
+            ) : (
+              <p className="text-sm text-black/60">
+                {isLogin
+                  ? "Don't have an account?"
+                  : "Already have an account?"}
+                <button
+                  type="button"
+                  className="ml-1 text-gold hover:text-black transition-colors"
+                  onClick={() => setIsLogin(!isLogin)}
+                >
+                  {isLogin ? "Sign up" : "Login"}
+                </button>
+              </p>
+            )}
           </div>
 
-          <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-black/10"></div>
+          {!isForgotPassword && (
+            <div className="mt-8">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-black/10"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-black/40 uppercase tracking-wider text-xs">
+                    Or continue with
+                  </span>
+                </div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-black/40 uppercase tracking-wider text-xs">
-                  Or continue with
-                </span>
-              </div>
-            </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"
-                  />
-                </svg>
-              </button>
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setError(null);
+                    setLoading(true);
+                    try {
+                      const { error } = await signInWithGoogle();
+                      if (error) throw error;
+                      onClose();
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "An error occurred with Google login"
+                      );
+                      console.error("Google login error:", err);
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                  className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setError(null);
+                    setLoading(true);
+                    try {
+                      const { error } = await signInWithFacebook();
+                      if (error) throw error;
+                      onClose();
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "An error occurred with Facebook login"
+                      );
+                      console.error("Facebook login error:", err);
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                  className="flex items-center justify-center py-3 px-4 border border-black/10 bg-white text-black hover:bg-black/5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

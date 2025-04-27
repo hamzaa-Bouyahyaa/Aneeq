@@ -1,7 +1,7 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
 import MainLayout from "./layouts/MainLayout";
 import LuxuryHome from "./pages/LuxuryHome";
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <AuthProvider>
     <RouterProvider router={router} />
-  </StrictMode>
+  </AuthProvider>
 );
