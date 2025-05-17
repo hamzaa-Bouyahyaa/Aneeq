@@ -48,6 +48,7 @@ const AuthModal = ({
 
     return () => {
       document.body.style.overflow = "auto";
+      setIsForgotPassword(false);
     };
   }, [isOpen, initialMode]);
 
@@ -172,7 +173,7 @@ const AuthModal = ({
             >
               {isForgotPassword
                 ? "Reset Password"
-                : isVerificationSent
+                : isVerificationSent && !isLogin
                 ? "Verify Your Email"
                 : isLogin
                 ? "Login"
@@ -187,7 +188,7 @@ const AuthModal = ({
             >
               {isForgotPassword
                 ? "Enter your email to receive reset instructions"
-                : isVerificationSent
+                : isVerificationSent && !isLogin
                 ? "Please check your inbox and verify your email to continue"
                 : isLogin
                 ? "Welcome back to Aneeq"
@@ -195,22 +196,41 @@ const AuthModal = ({
             </p>
           </div>
 
-          {isVerificationSent ? (
-            <div className={`space-y-8 transition-all duration-700 ease-in-out ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-            }`}>
+          {isVerificationSent && !isLogin ? (
+            <div
+              className={`space-y-8 transition-all duration-700 ease-in-out ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
               <div className="bg-white/5 p-6 rounded-sm border-l-4 border-gold">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="h-6 w-6 text-gold"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-white">Verification Email Sent</h3>
+                    <h3 className="text-lg font-medium text-white">
+                      Verification Email Sent
+                    </h3>
                     <p className="mt-2 text-sm text-white/70">
-                      We've sent a verification email to <span className="text-gold font-medium">{email}</span>. 
-                      Please check your inbox and click the verification link to activate your account.
+                      We've sent a verification email to{" "}
+                      <span className="text-gold font-medium">{email}</span>.
+                      Please check your inbox and click the verification link to
+                      activate your account.
                     </p>
                     <div className="mt-4">
                       <p className="text-sm text-white/70">
@@ -230,7 +250,7 @@ const AuthModal = ({
                   </div>
                 </div>
               </div>
-              
+
               <button
                 type="button"
                 onClick={() => {
@@ -360,29 +380,31 @@ const AuthModal = ({
                 </div>
               )}
 
-              {successMessage && (
-                <div className="border-l-4 border-gold bg-white/5 p-4 mb-4 transition-all duration-300">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg
-                        className="h-5 w-5 text-gold"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm text-white">{successMessage}</p>
+              {(isForgotPassword || isVerificationSent) &&
+                !isLogin &&
+                successMessage && (
+                  <div className="border-l-4 border-gold bg-white/5 p-4 mb-4 transition-all duration-300">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <svg
+                          className="h-5 w-5 text-gold"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-sm text-white">{successMessage}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {error && (
                 <div className="border-l-4 border-red-500 bg-white/5 p-4 mb-4 transition-all duration-300">
@@ -491,26 +513,30 @@ const AuthModal = ({
                 </svg>
                 Back to Login
               </button>
-            ) : !isVerificationSent && (
-              <p className="text-sm text-white/60">
-                {isLogin
-                  ? "Don't have an account?"
-                  : "Already have an account?"}
-                <button
-                  type="button"
-                  className="ml-1 text-gold hover:text-white transition-colors"
-                  onClick={() => setIsLogin(!isLogin)}
-                >
-                  {isLogin ? "Sign up" : "Login"}
-                </button>
-              </p>
+            ) : (
+              !isVerificationSent && (
+                <p className="text-sm text-white/60">
+                  {isLogin
+                    ? "Don't have an account?"
+                    : "Already have an account?"}
+                  <button
+                    type="button"
+                    className="ml-1 text-gold hover:text-white transition-colors"
+                    onClick={() => setIsLogin(!isLogin)}
+                  >
+                    {isLogin ? "Sign up" : "Login"}
+                  </button>
+                </p>
+              )
             )}
           </div>
 
           {!isForgotPassword && !isVerificationSent && (
             <div
               className={`mt-12 transition-all duration-700 delay-450 ease-in-out ${
-                isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
               <div className="relative">
