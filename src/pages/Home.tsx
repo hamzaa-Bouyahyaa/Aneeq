@@ -133,7 +133,7 @@ const Home = () => {
       <section className="py-16">
         <div className="container-custom">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold">Nearest Beauty Salons</h2>
+            <h2 className="text-3xl font-bold">Nearest Aneeq Salons</h2>
             <Link
               to="/salons"
               className="text-primary-600 hover:text-primary-700 font-medium"

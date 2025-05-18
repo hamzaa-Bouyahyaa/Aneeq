@@ -41,9 +41,8 @@ const Navbar = () => {
                   scrolled ? "text-navy" : "text-white"
                 }`}
               >
-                Beauty
+                Aneeq
               </span>
-              <span className="text-2xl font-bold text-gold">Salon</span>
             </div>
           </Link>
 

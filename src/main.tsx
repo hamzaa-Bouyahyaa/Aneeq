@@ -1,14 +1,14 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
 import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
-import Salons from "./pages/Salons";
+import LuxuryHome from "./pages/LuxuryHome";
+import LuxurySalons from "./pages/LuxurySalons";
 import SalonDetail from "./pages/SalonDetail";
 import Checkout from "./pages/Checkout";
-import Auth from "./pages/Auth";
+// Auth page removed in favor of modal
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -18,11 +18,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <LuxuryHome />,
       },
       {
         path: "salons",
-        element: <Salons />,
+        element: <LuxurySalons />,
       },
       {
         path: "salon/:id",
@@ -34,14 +34,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/login",
-    element: <Auth />,
-  },
-  {
-    path: "/signup",
-    element: <Auth />,
-  },
+  // Login and signup now handled by modal
   {
     path: "*",
     element: <NotFound />,
@@ -49,7 +42,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <AuthProvider>
     <RouterProvider router={router} />
-  </StrictMode>
+  </AuthProvider>
 );
