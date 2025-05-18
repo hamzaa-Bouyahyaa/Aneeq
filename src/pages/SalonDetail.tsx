@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Mock data for a salon
 const salonData = {
@@ -110,7 +110,6 @@ const salonData = {
 };
 
 const SalonDetail = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("services");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);

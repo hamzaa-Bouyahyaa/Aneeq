@@ -1,11 +1,18 @@
 import { useState } from "react";
 
+// Define the filter state interface
+interface FilterState {
+  services: string[];
+  rating: number;
+  price: number[];
+}
+
 interface FilterSidebarProps {
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: FilterState) => void;
 }
 
 const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     services: [],
     rating: 0,
     price: [0, 200],
@@ -181,7 +188,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       {/* Reset Filters */}
       <button
         onClick={() => {
-          const resetFilters = {
+          const resetFilters: FilterState = {
             services: [],
             rating: 0,
             price: [0, 200],

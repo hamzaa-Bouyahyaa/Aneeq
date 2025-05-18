@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Payment from "../components/Payment";
 import PaymentSuccess from "../components/PaymentSuccess";
 
 const Checkout = () => {
-  const { id } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const [paymentStep, setPaymentStep] = useState<
     "details" | "payment" | "success"
   >("details");
