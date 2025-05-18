@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MapView from "../components/MapView";
+import barberShopVideo from "../assets/videos/barberShop.mp4";
 
 // Mock data for salons
 const featuredSalons = [
@@ -222,9 +223,7 @@ const LuxuryHome = () => {
           {/* Single Video Element */}
           <div className="absolute inset-0 w-full h-full">
             <video
-              src={`${
-                import.meta.env.BASE_URL
-              }src/assets/videos/barberShop.mp4`}
+              src={barberShopVideo}
               className="absolute inset-0 w-full h-full object-cover"
               autoPlay
               loop
